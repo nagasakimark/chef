@@ -79,18 +79,10 @@ const Art = {
   },
 
   pizzaBase(cooked) {
-    if (!cooked) {
-      return `
-      <svg class="pizza-base" viewBox="0 0 200 200" aria-hidden="true">
-        <circle cx="100" cy="100" r="96" fill="#b97a2a"/>
-        <circle cx="100" cy="100" r="88" fill="#e8b26a"/>
-        <circle cx="100" cy="100" r="72" fill="#f7d9a0"/>
-        <circle cx="100" cy="100" r="72" fill="none" stroke="#e0b96f" stroke-width="3" opacity="0.7"/>
-        <ellipse cx="78" cy="70" rx="30" ry="16" fill="#fff" opacity="0.25"/>
-      </svg>`;
-    }
-    // Cooked pizza uses the baked base photo, with sauce + melted cheese
-    // images layered on top in pizza().
+    // Both raw and cooked pizzas use the baked base photo. Sauce (painted
+    // by the user) and melted-cheese images layer on top in pizza(), with
+    // the cheese kept smaller so crust + sauce rims stay visible.
+    void cooked;
     return `<img class="pizza-base-img" src="assets/pizzabase.png" alt="">`;
   },
 

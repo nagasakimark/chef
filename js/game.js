@@ -18,8 +18,6 @@
       result: document.getElementById("screen-result")
     },
     mute: document.getElementById("btn-mute"),
-    titleBowl: document.getElementById("title-bowl"),
-    titleChef: document.getElementById("title-chef"),
     modeGrid: document.getElementById("mode-grid"),
     pickTitle: document.getElementById("pick-title"),
     pickPills: document.getElementById("pick-pills"),
@@ -146,13 +144,7 @@
   function goTitle() {
     resetGame();
     state.mode = null;
-    if (els.titleBowl) els.titleBowl.innerHTML = Art.bowl(demoToppings(), { size: "lg", stage: "done" });
-    if (els.titleChef) els.titleChef.innerHTML = Art.chef("champon");
     showScreen("title");
-  }
-
-  function demoToppings() {
-    return [getIngredient("tomato"), getIngredient("cabbage"), getIngredient("egg")];
   }
 
   // ---------- mode select ----------
@@ -1059,6 +1051,7 @@
         .join("");
     }
     els.resultChef.innerHTML = Art.chef(state.mode || "champon");
+    els.resultChef.className = `mascot mascot-result chef-${state.mode || "champon"}`;
     burstConfetti();
   }
 
