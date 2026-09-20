@@ -1,0 +1,243 @@
+export const ingredients = [
+  // A
+  createIconifyIngredient('Apple', 'twemoji:red-apple', 'A', 'りんご', 'シャキシャキして甘い果物。スープに甘みを加えます。'),
+  createIconifyIngredient('Avocado', 'twemoji:avocado', 'A', 'アボカド', 'クリーミーで栄養たっぷりの果物。まろやかな味がします。'),
+  createCustomIngredient('Anchovy', anchovyImg, 'A', 'アンチョビ', '塩漬けの小魚。スープにコクと旨味を足します。'),
+  createCustomIngredient('Artichoke', artichokeImg, 'A', 'アーティチョーク', '地中海の野菜。ほくほくしてやさしい味がします。'),
+  
+  // B
+  createIconifyIngredient('Bacon', 'twemoji:bacon', 'B', 'ベーコン', '燻製した豚肉。カリカリで塩味が美味しいです。'),
+  createIconifyIngredient('Broccoli', 'twemoji:broccoli', 'B', 'ブロッコリー', '緑色で栄養いっぱい。コリコリした食感が楽しめます。'),
+  createIconifyIngredient('Beef', 'twemoji:cut-of-meat', 'B', '牛肉', '力がつくお肉。スープに深い味を加えます。'),
+  createIconifyIngredient('Banana', 'twemoji:banana', 'B', 'バナナ', '甘くてクリーミー。体に良い果物です。'),
+  createIconifyIngredient('Blueberry', 'twemoji:blueberries', 'B', 'ブルーベリー', '小さくて甘酸っぱいベリー。色もきれいです。'),
+  createCustomIngredient('Bell Pepper', bellpepperImg, 'B', 'ピーマン', 'パリパリで色がきれい。赤・黄・緑があります。'),
+  
+  // C
+  createIconifyIngredient('Carrot', 'twemoji:carrot', 'C', 'にんじん', 'オレンジ色で甘い野菜。栄養たっぷりです。'),
+  createIconifyIngredient('Chicken', 'twemoji:poultry-leg', 'C', '鶏肉', '色んな味に合うお肉。元気が出ます。'),
+  createIconifyIngredient('Cheese', 'twemoji:cheese-wedge', 'C', 'チーズ', 'クリーミーで旨味がある。スープをまろやかにします。'),
+  createIconifyIngredient('Corn', 'twemoji:ear-of-corn', 'C', 'とうもろこし', '甘い粒がプチプチ。食べるのが楽しいです。'),
+  createIconifyIngredient('Cherry', 'twemoji:cherries', 'C', 'さくらんぼ', '小さくて甘酸っぱい。きれいな赤色です。'),
+  createCustomIngredient('Cabbage', cabbageImg, 'C', 'キャベツ', 'ちゃんぽんに欠かせない野菜。甘くてシャキシャキです。'),
+  
+  // D
+  createIconifyIngredient('Duck', 'twemoji:duck', 'D', '鴨肉', '鶏肉より深い味のお肉。とっても美味しいです。'),
+  createIconifyIngredient('Dango', 'twemoji:dango', 'D', '団子', 'お米で作った和菓子。もちもちで甘いです。'),
+  createIconifyIngredient('Donut', 'twemoji:doughnut', 'D', 'ドーナツ', '甘い揚げパン。輪っかの形をしています。'),
+  createCustomIngredient('Dumplings', dumplingsImg, 'D', '餃子', 'お肉と野菜が入った包み。焼いても蒸しても美味しいです。'),
+  
+  // E
+  createIconifyIngredient('Egg', 'twemoji:egg', 'E', '卵', '色んな料理に使える。体に良いです。'),
+  createIconifyIngredient('Eggplant', 'twemoji:eggplant', 'E', 'ナス', '紫色の野菜。煮るとトロトロになります。'),
+  createIconifyIngredient('Edamame', 'fluent-emoji-flat:pea-pod', 'E', '枝豆', '若い大豆。ほんのり甘くて栄養いっぱいです。'),
+  
+  // F
+  createIconifyIngredient('Fish', 'twemoji:fish', 'F', '魚', '海の新鮮な味。体に良いです。'),
+  createIconifyIngredient('Fries', 'twemoji:french-fries', 'F', 'フライドポテト', 'カリカリの黄金色のポテト。サクサクです。'),
+  createIconifyIngredient('Fig', 'twemoji:chestnut', 'F', 'いちじく', '甘い果物。プチプチした食感があります。'),
+  createIconifyIngredient('Flan', 'twemoji:custard', 'F', 'フラン', 'なめらかで甘いプリン。とろけます。'),
+  createIconifyIngredient('Furikake', 'twemoji:salt', 'F', 'ふりかけ', '魚や海藻のミックス。ご飯にかけると美味しいです。'),
+  
+  // G
+  createIconifyIngredient('Grapes', 'twemoji:grapes', 'G', 'ぶどう', '甘くてジューシー。房になっています。'),
+  createIconifyIngredient('Garlic', 'twemoji:garlic', 'G', 'にんにく', '香りが強い野菜。料理の味を良くします。'),
+  createIconifyIngredient('Ginger', 'fluent-emoji-flat:ginger-root', 'G', '生姜', 'ピリッと辛い。体が温まります。'),
+  createIconifyIngredient('Gyoza', 'twemoji:dumpling', 'G', '餃子', '焼き餃子。底がカリカリで美味しいです。'),
+  
+  // H
+  createIconifyIngredient('Ham', 'twemoji:cut-of-meat', 'H', 'ハム', '燻製した豚肉。塩味が効いています。'),
+  createIconifyIngredient('Hamburger', 'twemoji:hamburger', 'H', 'ハンバーガー', 'パンにお肉を挟んだもの。人気です。'),
+  createIconifyIngredient('Honey', 'twemoji:honey-pot', 'H', '蜂蜜', 'ミツバチが作る甘いもの。体に良いです。'),
+  createIconifyIngredient('Hot Dog', 'twemoji:hot-dog', 'H', 'ホットドッグ', 'ソーセージをパンに挟んだもの。'),
+  createIconifyIngredient('Hayashi Rice', 'emojione-v1:curry-rice', 'H', 'ハヤシライス', '牛肉のシチューをご飯にかけたもの。洋食です。'),
+  
+  // I
+  createIconifyIngredient('Ice Cream', 'twemoji:ice-cream', 'I', 'アイスクリーム', '冷たくて甘いデザート。夏に食べると最高です。'),  
+  // J
+  createIconifyIngredient('Jam', 'twemoji:jar', 'J', 'ジャム', '果物を煮て作る甘いもの。パンにつけます。'),
+  createIconifyIngredient('Jelly', 'twemoji:custard', 'J', 'ゼリー', 'プルプルした甘いデザート。つるんとしています。'),
+  createIconifyIngredient('Jalapeno', 'twemoji:hot-pepper', 'J', 'ハラペーニョ', '緑色の辛い唐辛子。ピリッとします。'),
+  createIconifyIngredient('Jack Fruit', 'twemoji:melon', 'J', 'ジャックフルーツ', '大きな南国の果物。甘くてお肉みたいな食感です。'),
+  
+  // K
+  createIconifyIngredient('Kiwi', 'twemoji:kiwi-fruit', 'K', 'キウイ', '緑色の果物。甘酸っぱくてビタミンたっぷりです。'),
+  createIconifyIngredient('Kale', 'twemoji:leafy-green', 'K', 'ケール', '栄養いっぱいの葉っぱ。少し苦いです。'),
+  createCustomIngredient('Kimchi', kimchiImg, 'K', 'キムチ', '韓国の漬物。辛くて酸っぱくて美味しいです。'),
+  
+  // L
+  createIconifyIngredient('Lemon', 'twemoji:lemon', 'L', 'レモン', '黄色くて酸っぱい果物。さわやかです。'),
+  createIconifyIngredient('Lobster', 'twemoji:lobster', 'L', 'ロブスター', '高級な海老。甘くて柔らかいです。'),
+  createIconifyIngredient('Lettuce', 'twemoji:leafy-green', 'L', 'レタス', 'シャキシャキの葉っぱ。サラダによく使います。'),
+  createIconifyIngredient('Lollipop', 'twemoji:lollipop', 'L', 'ロリポップ', '棒がついた甘いキャンディー。'),
+  
+  // M
+  createIconifyIngredient('Mango', 'twemoji:mango', 'M', 'マンゴー', '南国の果物。すごく甘くてジューシーです。'),
+  createIconifyIngredient('Mushroom', 'twemoji:mushroom', 'M', 'きのこ', '旨味がたっぷり。色んな種類があります。'),
+  createIconifyIngredient('Meatball', 'twemoji:meat-on-bone', 'M', 'ミートボール', 'ひき肉を丸めたもの。食べ応えがあります。'),
+  createIconifyIngredient('Matcha', 'twemoji:teacup-without-handle', 'M', '抹茶', '緑茶の粉。きれいな緑色で少し苦いです。'),
+  
+  // N
+  createIconifyIngredient('Natto', 'twemoji:beans', 'N', '納豆', 'ネバネバの大豆。体に良くて栄養いっぱいです。'),
+  createIconifyIngredient('Nori', 'twemoji:leafy-green', 'N', '海苔', '海藻を乾燥させたもの。海の香りがします。'),
+  createIconifyIngredient('Noodles', 'twemoji:spaghetti', 'N', '麺', 'パスタや中華麺など。色んな料理に使えます。'),
+  createIconifyIngredient('Nuts', 'twemoji:peanuts', 'N', 'ナッツ', 'カリカリの木の実。栄養たっぷりです。'),
+  createIconifyIngredient('Naruto', 'twemoji:fish-cake-with-swirl', 'N', 'ナルト', '白い魚のすり身。ピンクの渦巻き模様があります。'),
+  
+  // O
+  createIconifyIngredient('Orange', 'twemoji:tangerine', 'O', 'オレンジ', 'オレンジ色で甘い果物。ビタミンたっぷりです。'),
+  createIconifyIngredient('Onion', 'twemoji:onion', 'O', '玉ねぎ', '煮ると甘くなる野菜。料理に深い味を加えます。'),
+  createIconifyIngredient('Octopus', 'twemoji:octopus', 'O', 'たこ', 'コリコリした海の生き物。タコ焼きに入っています。'),
+  createIconifyIngredient('Omelette', 'twemoji:egg', 'O', 'オムレツ', 'ふわふわの卵料理。朝ごはんに人気です。'),
+  
+  // P
+  createIconifyIngredient('Pizza', 'twemoji:pizza', 'P', 'ピザ', 'チーズとトッピングがのったイタリア料理。'),
+  createIconifyIngredient('Pear', 'twemoji:pear', 'P', '梨', 'シャキシャキして甘い果物。水分たっぷりです。'),
+  createIconifyIngredient('Pineapple', 'twemoji:pineapple', 'P', 'パイナップル', '南国の果物。甘くて少し酸っぱいです。'),
+  createIconifyIngredient('Pork', 'twemoji:cut-of-meat', 'P', '豚肉', '色んな料理に使えるお肉。柔らかくて美味しいです。'),
+  createIconifyIngredient('Potato', 'twemoji:potato', 'P', 'じゃがいも', 'ほくほくの野菜。お腹いっぱいになります。'),
+  
+  // Q
+  createIconifyIngredient('Quiche', 'twemoji:pie', 'Q', 'キッシュ', '卵とチーズのタルト。おしゃれな料理です。'),
+  createIconifyIngredient('Quesadilla', 'twemoji:stuffed-flatbread', 'Q', 'ケサディーヤ', 'チーズを挟んだメキシコの料理。とろけます。'),
+  
+  // R
+  createIconifyIngredient('Rice', 'twemoji:cooked-rice', 'R', 'ご飯', '日本人の主食。お腹いっぱいになります。'),
+  createIconifyIngredient('Ramen', 'twemoji:steaming-bowl', 'R', 'ラーメン', '日本の麺料理。熱々のスープが美味しいです。'),
+  createIconifyIngredient('Radish', 'twemoji:carrot', 'R', '大根', 'シャキシャキの白い野菜。煮物に合います。'),
+  createIconifyIngredient('Raspberry', 'twemoji:strawberry', 'R', 'ラズベリー', '小さくて酸っぱいベリー。きれいな赤色です。'),
+  
+  // S
+  createIconifyIngredient('Sushi', 'twemoji:sushi', 'S', '寿司', 'ご飯と魚の日本料理。お祝いの日に食べます。'),
+  createIconifyIngredient('Strawberry', 'twemoji:strawberry', 'S', 'いちご', '甘くて赤いベリー。人気の果物です。'),
+  createIconifyIngredient('Sausage', 'twemoji:hot-dog', 'S', 'ソーセージ', 'お肉を詰めたもの。朝ごはんによく食べます。'),
+  createIconifyIngredient('Salmon', 'twemoji:fish', 'S', '鮭', 'ピンク色の魚。体に良くて美味しいです。'),
+  createCustomIngredient('Shrimp', shrimpImg, 'S', '海老', 'ちゃんぽんに欠かせない海老。プリプリで甘いです。'),
+  createCustomIngredient('Squid', squidImg, 'S', 'イカ', 'コリコリした海の生き物。和食や中華に使います。'),
+  createCustomIngredient('Spring Onion', springonionImg, 'S', '青ネギ', '緑色のネギ。スープの上にのせると香りが良いです。'),
+  
+  // T
+  createIconifyIngredient('Tomato', 'twemoji:tomato', 'T', 'トマト', '赤くてジューシー。甘酸っぱい味がします。'),
+  createIconifyIngredient('Taco', 'twemoji:taco', 'T', 'タコス', 'トルティーヤにお肉を入れたメキシコ料理。'),
+  createIconifyIngredient('Tempura', 'twemoji:fried-shrimp', 'T', '天ぷら', 'サクサクの衣で揚げた日本料理。海老が人気です。'),
+  createCustomIngredient('Tofu', tofuImg, 'T', '豆腐', '大豆から作ったもの。柔らかくて体に良いです。'),
+  
+  // U
+  createIconifyIngredient('Ume', 'twemoji:peach', 'U', '梅', '酸っぱくて塩辛い日本の梅干し。おにぎりに入っています。'),
+  
+  // V
+  createIconifyIngredient('Vegetable', 'twemoji:leafy-green', 'V', '野菜', '体に良い植物の食べ物。色んな種類があります。'),
+  createIconifyIngredient('Venison', 'twemoji:deer', 'V', '鹿肉', '鹿のお肉。さっぱりしています。'),
+  
+  // W
+  createIconifyIngredient('Watermelon', 'twemoji:watermelon', 'W', 'スイカ', '夏の果物。甘くて水分たっぷりです。'),
+  createIconifyIngredient('Waffle', 'twemoji:waffle', 'W', 'ワッフル', '格子模様の甘いパン。カリカリです。'),
+  createIconifyIngredient('Wagyu', 'twemoji:cut-of-meat', 'W', '和牛', '日本の高級な牛肉。すごく柔らかいです。'),
+  createIconifyIngredient('Wakame', 'twemoji:leafy-green', 'W', 'わかめ', '海藻の一種。味噌汁によく入っています。'),
+  
+  // X
+  createIconifyIngredient('Xigua', 'twemoji:watermelon', 'X', '西瓜', 'スイカの中国語名。夏に食べると涼しくなります。'),
+  
+  // Y
+  createIconifyIngredient('Yakitori', 'twemoji:meat-on-bone', 'Y', '焼き鳥', '鶏肉の串焼き。甘いタレが美味しいです。'),
+  createIconifyIngredient('Yam', 'fxemoji:roastedsweetpotato', 'Y', '山芋', 'ネバネバの芋。すりおろして食べます。'),
+  createIconifyIngredient('Yuzu', 'twemoji:lemon', 'Y', '柚子', '香りの良い日本の柑橘類。爽やかな香りがします。'),
+  
+  // Z
+  createIconifyIngredient('Zucchini', 'twemoji:cucumber', 'Z', 'ズッキーニ', 'きゅうりみたいな夏野菜。炒めると美味しいです。'),
+];
+
+export const countries = [
+  // Africa
+  { name: 'Egypt', flag: '🇪🇬', code: 'eg', continent: 'Africa' },
+  { name: 'Ethiopia', flag: '🇪🇹', code: 'et', continent: 'Africa' },
+  { name: 'Ghana', flag: '🇬🇭', code: 'gh', continent: 'Africa' },
+  { name: 'Kenya', flag: '🇰🇪', code: 'ke', continent: 'Africa' },
+  { name: 'Morocco', flag: '🇲🇦', code: 'ma', continent: 'Africa' },
+  { name: 'Nigeria', flag: '  ', code: 'ng', continent: 'Africa' },
+  { name: 'South Africa', flag: '  ', code: 'za', continent: 'Africa' },
+  { name: 'Tunisia', flag: '🇹🇳', code: 'tn', continent: 'Africa' },
+
+  // Asia
+  { name: 'Afghanistan', flag: '🇦🇫', code: 'af', continent: 'Asia' },
+  { name: 'Bangladesh', flag: '🇧🇩', code: 'bd', continent: 'Asia' },
+  { name: 'China', flag: '🇨🇳', code: 'cn', continent: 'Asia' },
+  { name: 'India', flag: '🇮🇳', code: 'in', continent: 'Asia' },
+  { name: 'Indonesia', flag: '🇮🇩', code: 'id', continent: 'Asia' },
+  { name: 'Iran', flag: '🇮🇷', code: 'ir', continent: 'Asia' },
+  { name: 'Iraq', flag: '🇮🇶', code: 'iq', continent: 'Asia' },
+  { name: 'Israel', flag: '🇮🇱', code: 'il', continent: 'Asia' },
+  { name: 'Japan', flag: '🇯🇵', code: 'jp', continent: 'Asia' },
+  { name: 'Jordan', flag: '🇯🇴', code: 'jo', continent: 'Asia' },
+  { name: 'Kazakhstan', flag: '🇰🇿', code: 'kz', continent: 'Asia' },
+  { name: 'Korea', flag: '🇰🇷', code: 'kr', continent: 'Asia' },
+  { name: 'Lebanon', flag: '🇱🇧', code: 'lb', continent: 'Asia' },
+  { name: 'Malaysia', flag: '  ', code: 'my', continent: 'Asia' },
+  { name: 'Mongolia', flag: '🇲🇳', code: 'mn', continent: 'Asia' },
+  { name: 'Myanmar', flag: '🇲🇲', code: 'mm', continent: 'Asia' },
+  { name: 'Nepal', flag: '🇳🇵', code: 'np', continent: 'Asia' },
+  { name: 'Pakistan', flag: '🇵 ', code: 'pk', continent: 'Asia' },
+  { name: 'Philippines', flag: '🇵 ', code: 'ph', continent: 'Asia' },
+  { name: 'Saudi Arabia', flag: '🇸🇦', code: 'sa', continent: 'Asia' },
+  { name: 'Singapore', flag: '🇸🇬', code: 'sg', continent: 'Asia' },
+  { name: 'Sri Lanka', flag: '🇱🇰', code: 'lk', continent: 'Asia' },
+  { name: 'Syria', flag: '🇸🇾', code: 'sy', continent: 'Asia' },
+  { name: 'Taiwan', flag: '  ', code: 'tw', continent: 'Asia' },
+  { name: 'Thailand', flag: '🇹🇭', code: 'th', continent: 'Asia' },
+  { name: 'Turkey', flag: '🇹🇷', code: 'tr', continent: 'Asia' },
+  { name: 'The UAE', flag: '🇦🇪', code: 'ae', continent: 'Asia' },
+  { name: 'Uzbekistan', flag: '  ', code: 'uz', continent: 'Asia' },
+  { name: 'Vietnam', flag: '🇻🇳', code: 'vn', continent: 'Asia' },
+
+  // Europe
+  { name: 'Austria', flag: '🇦🇹', code: 'at', continent: 'Europe' },
+  { name: 'Belgium', flag: '🇧🇪', code: 'be', continent: 'Europe' },
+  { name: 'Bulgaria', flag: '🇧🇬', code: 'bg', continent: 'Europe' },
+  { name: 'Croatia', flag: ' 🇷', code: 'hr', continent: 'Europe' },
+  { name: 'Czech Republic', flag: '🇨🇿', code: 'cz', continent: 'Europe' },
+  { name: 'Denmark', flag: '🇩🇰', code: 'dk', continent: 'Europe' },
+  { name: 'Finland', flag: '🇫🇮', code: 'fi', continent: 'Europe' },
+  { name: 'France', flag: '🇫🇷', code: 'fr', continent: 'Europe' },
+  { name: 'Germany', flag: '  ', code: 'de', continent: 'Europe' },
+  { name: 'Greece', flag: '🇬🇷', code: 'gr', continent: 'Europe' },
+  { name: 'Hungary', flag: '🇭🇺', code: 'hu', continent: 'Europe' },
+  { name: 'Iceland', flag: '🇮🇸', code: 'is', continent: 'Europe' },
+  { name: 'Ireland', flag: '🇮🇪', code: 'ie', continent: 'Europe' },
+  { name: 'Italy', flag: '🇮🇹', code: 'it', continent: 'Europe' },
+  { name: 'Netherlands', flag: '🇳🇱', code: 'nl', continent: 'Europe' },
+  { name: 'Norway', flag: '🇳🇴', code: 'no', continent: 'Europe' },
+  { name: 'Poland', flag: '🇵🇱', code: 'pl', continent: 'Europe' },
+  { name: 'Portugal', flag: '  🇹', code: 'pt', continent: 'Europe' },
+  { name: 'Romania', flag: '🇷🇴', code: 'ro', continent: 'Europe' },
+  { name: 'Russia', flag: '🇷🇺', code: 'ru', continent: 'Europe' },
+  { name: 'Spain', flag: '🇪🇸', code: 'es', continent: 'Europe' },
+  { name: 'Sweden', flag: '  ', code: 'se', continent: 'Europe' },
+  { name: 'Switzerland', flag: '🇨🇭', code: 'ch', continent: 'Europe' },
+  { name: 'Ukraine', flag: '🇺🇦', code: 'ua', continent: 'Europe' },
+  { name: 'The UK', flag: '🇬🇧', code: 'gb', continent: 'Europe' },
+
+  // North America
+  { name: 'Canada', flag: ' 🇦', code: 'ca', continent: 'North America' },
+  { name: 'Costa Rica', flag: '🇨🇷', code: 'cr', continent: 'North America' },
+  { name: 'Cuba', flag: '🇨🇺', code: 'cu', continent: 'North America' },
+  { name: 'Guatemala', flag: '  ', code: 'gt', continent: 'North America' },
+  { name: 'Jamaica', flag: '🇯🇲', code: 'jm', continent: 'North America' },
+  { name: 'Mexico', flag: '🇲🇽', code: 'mx', continent: 'North America' },
+  { name: 'Panama', flag: '🇵🇦', code: 'pa', continent: 'North America' },
+  { name: 'America', flag: '🇺🇸', code: 'us', continent: 'North America' },
+
+  // Oceania
+  { name: 'Australia', flag: '🇦🇺', code: 'au', continent: 'Oceania' },
+  { name: 'Fiji', flag: '  ', code: 'fj', continent: 'Oceania' },
+  { name: 'New Zealand', flag: '🇳🇿', code: 'nz', continent: 'Oceania' },
+  // South America
+  { name: 'Argentina', flag: '🇦🇷', code: 'ar', continent: 'South America' },
+  { name: 'Bolivia', flag: '  ', code: 'bo', continent: 'South America' },
+  { name: 'Brazil', flag: '🇧🇷', code: 'br', continent: 'South America' },
+  { name: 'Chile', flag: '🇨🇱', code: 'cl', continent: 'South America' },
+  { name: 'Colombia', flag: '🇨🇴', code: 'co', continent: 'South America' },
+  { name: 'Ecuador', flag: '🇪🇨', code: 'ec', continent: 'South America' },
+  { name: 'Peru', flag: '🇵🇪', code: 'pe', continent: 'South America' },
+  { name: 'Uruguay', flag: '🇺🇾', code: 'uy', continent: 'South America' },
+  { name: 'Venezuela', flag: '🇻 ', code: 've', continent: 'South America' },
+];

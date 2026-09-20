@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Food Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23e53935'/><ellipse cx='50' cy='58' rx='28' ry='10' fill='%23f0c978'/></svg>">
+</head>
+<body>
+  <div id="game">
+    <div id="hud">
+      <button id="btn-mute" class="hud-btn" type="button" aria-label="Mute sound">🔊</button>
+    </div>
+
+    <section id="screen-title" class="screen is-active">
+      <div class="deco-dots" aria-hidden="true"></div>
+      <h1 class="game-title">
+        <span>FOOD</span>
+        <span>MAKER</span>
+      </h1>
+      <p class="title-tag">What do you want to make?</p>
+      <div class="mode-grid" id="mode-grid">
+        <button class="mode-card" type="button" data-mode="champon">
+          <span class="mode-emoji" aria-hidden="true">🍜</span>
+          <span class="mode-name">Champon</span>
+          <span class="mode-sub">noodle bowl</span>
+        </button>
+        <button class="mode-card" type="button" data-mode="pizza">
+          <span class="mode-emoji" aria-hidden="true">🍕</span>
+          <span class="mode-name">Pizza</span>
+          <span class="mode-sub">sauce + cheese + top</span>
+        </button>
+        <button class="mode-card" type="button" data-mode="burger">
+          <span class="mode-emoji" aria-hidden="true">🍔</span>
+          <span class="mode-name">Burger</span>
+          <span class="mode-sub">pick + stack it</span>
+        </button>
+        <button class="mode-card" type="button" data-mode="sandwich">
+          <span class="mode-emoji" aria-hidden="true">🥪</span>
+          <span class="mode-name">Sandwich</span>
+          <span class="mode-sub">pick + stack it</span>
+        </button>
+      </div>
+      <div id="title-bowl" class="title-bowl-wrap"></div>
+      <div id="title-chef" class="mascot mascot-title"></div>
+    </section>
+
+    <section id="screen-pick" class="screen">
+      <header class="play-header">
+        <div class="progress-pills" id="pick-pills"></div>
+        <h2 class="play-title" id="pick-title">INGREDIENT 1 / 3</h2>
+        <p class="play-hint">Pick 1 yummy thing! Scroll down ↓</p>
+      </header>
+      <div class="play-body">
+        <aside class="bowl-dock">
+          <div class="dock-label" id="pick-dock-label">Your bowl</div>
+          <div id="pick-bowl"></div>
+        </aside>
+        <div class="table-green">
+          <div id="ing-grid" class="ing-grid"></div>
+        </div>
+      </div>
+      <footer class="play-footer">
+        <button id="btn-pick-back" class="btn btn-back" type="button">BACK</button>
+        <button id="btn-pick-restart" class="btn btn-restart" type="button">START OVER</button>
+        <div id="pick-chef" class="mascot mascot-corner"></div>
+      </footer>
+    </section>
+
+    <section id="screen-country" class="screen">
+      <header class="play-header">
+        <div class="progress-pills" id="country-pills"></div>
+        <h2 class="play-title" id="country-title">Where is it from?</h2>
+        <p class="play-hint" id="country-hint">Choose a country ↓</p>
+      </header>
+      <div class="play-body country-body">
+        <aside class="choice-hero" id="country-hero"></aside>
+        <div class="table-green country-table">
+          <div id="country-grid" class="country-grid"></div>
+        </div>
+        <aside class="bowl-dock mini">
+          <div class="dock-label" id="country-dock-label">Your bowl</div>
+          <div id="country-bowl"></div>
+        </aside>
+      </div>
+      <footer class="play-footer">
+        <button id="btn-country-back" class="btn btn-back" type="button">BACK</button>
+        <button id="btn-country-restart" class="btn btn-restart" type="button">START OVER</button>
+      </footer>
+    </section>
+
+    <section id="screen-sauce" class="screen">
+      <header class="play-header">
+        <h2 class="play-title">Paint the sauce!</h2>
+        <p class="play-hint">Pick a sauce, then draw on the pizza 🍕</p>
+      </header>
+      <div class="play-body sauce-body">
+        <aside class="sauce-tools">
+          <div class="dock-label">Sauce</div>
+          <button class="sauce-btn is-active" type="button" data-sauce="tomato">
+            <span class="sauce-dot sauce-tomato"></span>Tomato
+          </button>
+          <button class="sauce-btn" type="button" data-sauce="bbq">
+            <span class="sauce-dot sauce-bbq"></span>BBQ
+          </button>
+          <button id="btn-sauce-clear" class="btn btn-back btn-small" type="button">CLEAR</button>
+          <div class="sauce-meter"><div id="sauce-fill"></div></div>
+          <p class="sauce-tip">Drag on the pizza to paint!</p>
+        </aside>
+        <div class="table-green pizza-table">
+          <div id="pizza-paint" class="pizza-wrap"></div>
+        </div>
+      </div>
+      <footer class="play-footer">
+        <button id="btn-sauce-back" class="btn btn-back" type="button">BACK</button>
+        <button id="btn-sauce-next" class="btn btn-yes btn-next" type="button">TOPPINGS →</button>
+      </footer>
+    </section>
+
+    <section id="screen-cheese" class="screen">
+      <header class="play-header">
+        <h2 class="play-title">Pick your cheese!</h2>
+        <p class="play-hint" id="cheese-hint">Tap a cheese to see it on your pizza 🧀</p>
+      </header>
+      <div class="play-body cheese-body">
+        <aside class="cheese-dock">
+          <div class="dock-label">Your pizza</div>
+          <div id="cheese-preview" class="pizza-live"></div>
+        </aside>
+        <div class="table-green">
+          <div id="cheese-grid" class="cheese-grid"></div>
+        </div>
+      </div>
+      <footer class="play-footer">
+        <button id="btn-cheese-back" class="btn btn-back" type="button">BACK</button>
+        <button id="btn-cheese-next" class="btn btn-yes btn-next" type="button">TOPPINGS →</button>
+      </footer>
+    </section>
+
+    <section id="screen-pizza" class="screen">
+      <header class="play-header">
+        <h2 class="play-title">Top your pizza!</h2>
+        <p class="play-hint" id="pizza-hint">Drag a topping onto the pizza — or tap one, then tap the pizza!</p>
+      </header>
+      <div class="play-body pizza-build">
+        <aside class="topping-tray">
+          <div class="dock-label">Your toppings</div>
+          <div id="pizza-grid" class="topping-list"></div>
+          <div class="stack-count" id="pizza-count"></div>
+        </aside>
+        <div class="table-green pizza-table">
+          <div id="pizza-live" class="pizza-live pizza-large"></div>
+        </div>
+      </div>
+      <footer class="play-footer">
+        <button id="btn-pizza-back" class="btn btn-back" type="button">BACK</button>
+        <button id="btn-pizza-undo" class="btn btn-restart" type="button">UNDO</button>
+        <button id="btn-pizza-done" class="btn btn-yes btn-next" type="button">COOK! →</button>
+      </footer>
+    </section>
+
+    <section id="screen-stack" class="screen">
+      <header class="play-header">
+        <h2 class="play-title" id="stack-title">Build your burger!</h2>
+        <p class="play-hint" id="stack-hint">Your picked fillings are stacked! Tap to add more. Tap the stack to remove.</p>
+      </header>
+      <div class="play-body">
+        <aside class="stack-dock">
+          <div class="dock-label">Your stack</div>
+          <div id="stack-live" class="stack-live"></div>
+          <div class="stack-count" id="stack-count"></div>
+        </aside>
+        <div class="table-green">
+          <div id="stack-grid" class="ing-grid"></div>
+        </div>
+      </div>
+      <footer class="play-footer">
+        <button id="btn-stack-back" class="btn btn-back" type="button">BACK</button>
+        <button id="btn-stack-clear" class="btn btn-restart" type="button">CLEAR</button>
+        <button id="btn-stack-done" class="btn btn-yes btn-next" type="button">COOK! →</button>
+      </footer>
+    </section>
+
+    <section id="screen-cook" class="screen">
+      <h2 class="cook-title" id="cook-title">Making champon!</h2>
+      <div id="cook-bowl" class="cook-bowl-wrap"></div>
+      <p class="cook-sub" id="cook-sub">Noodles going in...</p>
+    </section>
+
+    <section id="screen-result" class="screen">
+      <h2 class="result-banner" id="result-banner">YOUR CHAMPON!</h2>
+      <div class="result-layout">
+        <div class="result-left">
+          <div id="result-bowl"></div>
+        </div>
+        <div class="result-right">
+          <div id="result-list" class="letter-board"></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button id="btn-menu" class="btn btn-round btn-menu" type="button" aria-label="Back to menu">🏠</button>
+        <button id="btn-again" class="btn btn-round" type="button" aria-label="Play again">↻</button>
+      </div>
+      <div id="result-chef" class="mascot mascot-result"></div>
+      <div id="confetti" aria-hidden="true"></div>
+    </section>
+  </div>
+  <div id="fly-layer"></div>
+  <div id="confirm-modal" class="modal" hidden>
+    <div class="modal-card">
+      <div id="confirm-art" class="confirm-art"></div>
+      <h2 id="confirm-en"></h2>
+      <p id="confirm-ja"></p>
+      <p class="confirm-q">これでいい？</p>
+      <div class="confirm-actions">
+        <button id="confirm-no" class="btn btn-back" type="button">ちがう</button>
+        <button id="confirm-yes" class="btn btn-yes" type="button">はい！</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
