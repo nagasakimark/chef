@@ -50,6 +50,7 @@ button {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   min-height: 100%;
 }
 
@@ -1134,10 +1135,10 @@ button {
 }
 .pizza-melt-img {
   position: absolute;
-  left: 16%;
-  top: 16%;
-  width: 68%;
-  height: 68%;
+  left: 12%;
+  top: 12%;
+  width: 76%;
+  height: 76%;
   object-fit: contain;
   pointer-events: none;
 }
@@ -1536,29 +1537,135 @@ button {
 }
 
 @media (max-width: 700px) {
+  .screen { padding: 10px 10px 8px; }
+  .hud-btn { width: 44px; height: 44px; font-size: 20px; }
+  .play-header { margin-bottom: 4px; }
+  .play-title { font-size: clamp(20px, 5.4vw, 28px); }
+  .play-hint { font-size: clamp(13px, 3.6vw, 17px); }
+  .progress-pills { margin-bottom: 4px; }
+  .pill { width: 40px; height: 14px; }
+  .play-body { gap: 8px; }
+  .play-body > * { min-height: 0; min-width: 0; }
+  .play-footer { height: auto; min-height: 60px; gap: 8px; padding-top: 6px; flex-wrap: wrap; }
+  .play-footer .btn { min-width: 0; min-height: 52px; font-size: 16px; padding: 8px 12px; flex: 1 1 auto; }
+  .btn-small { min-height: 44px; }
+
+  /* title: 2-up big chef cards that scroll if needed */
   .mode-card { width: clamp(160px, 42vw, 220px); }
   .mode-chef { height: clamp(110px, 16vh, 150px); }
+
+  /* pick screen: narrow dock so the grid still fits */
+  .bowl-dock { width: 118px; padding: 8px 6px 10px; flex-shrink: 0; }
+  .bowl-dock.mini { display: none; }
+  .dock-label { font-size: 14px; }
+  .table-green { padding: 8px; border-width: 5px; border-radius: 20px; }
+  .ing-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 88px; gap: 8px; }
+  .ing-btn .food-img { width: 34px; height: 34px; }
+  .ing-btn .ing-en { font-size: 11px; }
+
+  /* country screen: stack vertically, compact hero */
+  .country-body { flex-direction: column; }
+  .choice-hero { width: 100%; flex-direction: row; gap: 10px; padding: 8px 10px; flex-shrink: 0; }
+  .choice-hero .food-img { width: 64px; height: 64px; }
+  .choice-hero h3 { font-size: 20px; margin-top: 0; }
+  .country-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 92px; gap: 8px; }
+  .country-btn .flag-img { width: 48px; }
+  .country-btn .country-en { font-size: 11px; }
+
+  /* sauce screen */
   .sauce-body { flex-direction: column; }
-  .sauce-tools { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .sauce-tools { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; flex-shrink: 0; }
   .sauce-tools .dock-label { width: 100%; text-align: center; }
-  .sauce-btn { flex: 1; justify-content: center; }
+  .sauce-btn { flex: 1; justify-content: center; font-size: 15px; padding: 8px; }
   .sauce-meter { flex: 1 1 100%; }
-  .pizza-wrap { width: min(100%, 44vh); }
-  .pizza-build { flex-direction: column; }
-  .topping-tray { width: 100%; }
-  .topping-list { flex-direction: row; }
-  .topping-list .ing-btn { flex: 1; min-height: 96px; }
-  #screen-pizza .pizza-large { width: min(100%, 46vh); margin: 0 auto; }
+  .sauce-tip { display: none; }
+  .pizza-wrap { width: min(100%, 40vh); }
+
+  /* cheese screen */
   .cheese-body { flex-direction: column; }
-  .cheese-dock { width: 100%; }
-  .cheese-grid { grid-template-columns: repeat(2, 1fr); }
+  .cheese-dock { width: 100%; padding: 8px; flex-shrink: 0; }
+  .cheese-dock .pizza-md { max-width: 170px; }
+  .cheese-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .cheese-btn { padding: 8px 4px; }
+  .cheese-dot { width: 34px; height: 34px; }
+  .cheese-btn .ing-en { font-size: 14px; }
+
+  /* pizza build */
+  .pizza-build { flex-direction: column; }
+  .topping-tray { width: 100%; padding: 8px; gap: 8px; flex-shrink: 0; }
+  .topping-list { flex-direction: row; gap: 8px; }
+  .topping-list .ing-btn { flex: 1; min-height: 84px; padding: 6px 4px; }
+  .topping-list .ing-btn .food-img { width: 40px; height: 40px; }
+  .topping-badge { font-size: 11px; }
+  #screen-pizza .pizza-large { width: min(100%, 38vh); margin: 0 auto; }
+  #screen-pizza .pizza-large .pizza-xl { max-width: none; }
+  .stack-count { font-size: 13px; margin-top: 4px; }
+
+  /* stack builder: narrow dock */
+  .stack-dock { width: 150px; flex-shrink: 0; }
+  .stack-layer { min-height: 36px; }
+  .stack-layer img { width: 26px; height: 26px; }
+  .stack-layer span { font-size: 12px; }
+
+  /* cook screen */
+  .cook-title { font-size: clamp(24px, 6vw, 34px); margin-top: 2px; }
+  .cook-sub { font-size: clamp(15px, 4vw, 22px); margin-bottom: 4px; }
+  #screen-cook .cook-bowl-wrap .pizza { max-width: min(440px, 52vh); }
+  #screen-cook .cook-bowl-wrap .stack { max-width: min(360px, 50vh); }
   .oven-scene { padding-bottom: 120px; }
+
+  /* result screen: stack vertically, compact rows, actions in flow */
+  .result-banner { font-size: clamp(30px, 8vw, 48px); }
+  .result-layout { flex-direction: column; gap: 8px; }
+  .result-layout > * { min-height: 0; min-width: 0; }
+  .result-left { border-width: 5px; border-radius: 20px; flex: 1 1 auto; }
+  #result-bowl { width: min(100%, 34vh); }
+  #result-bowl .pizza { max-width: min(100%, 34vh); }
+  #result-bowl .stack { max-height: 34vh; }
+  .result-right { flex: 1 1 auto; }
+  .letter-board { gap: 8px; padding: 10px 12px; border-width: 5px; border-radius: 20px; justify-content: flex-start; }
+  .letter-row { gap: 10px; }
+  .letter-circle { width: 56px; height: 56px; font-size: 30px; border-width: 3px; }
+  .letter-copy .name { font-size: 20px; }
+  .letter-copy .from { font-size: 15px; margin-top: 2px; gap: 6px; }
+  .letter-copy .flag-img { width: 44px; }
+  .result-actions { position: static; justify-content: center; padding: 2px 0 0; }
+  .btn-round { width: 60px; height: 60px; font-size: 30px; }
+  .mascot-result { width: 84px; }
+  #result-chef.chef-pizza { width: 130px; }
 }
 
 @media (max-height: 700px) {
-  .play-footer { height: 72px; }
-  .btn-back, .btn-restart { min-height: 54px; font-size: 16px; }
-  .game-title span { font-size: 56px; }
+  .screen { padding: 8px 12px 6px; }
+  .play-header { margin-bottom: 2px; }
+  .play-title { font-size: clamp(20px, 3vw, 28px); }
+  .play-hint { font-size: 14px; }
+  .progress-pills { margin-bottom: 4px; }
+  .play-footer { height: auto; min-height: 56px; gap: 8px; padding-top: 4px; flex-wrap: wrap; }
+  .play-footer .btn { min-height: 48px; font-size: 15px; }
+  .btn-back, .btn-restart { min-width: 120px; }
+  .btn-next { min-width: 140px; }
+  .game-title span { font-size: 44px; }
+  .title-tag { font-size: 16px; margin: 4px 0 2px; }
+  .mode-grid { margin: 4px 0 2px; }
+  .mode-chef { height: clamp(90px, 18vh, 150px); }
+  .mode-name { font-size: clamp(20px, 2.4vw, 28px); }
+  .table-green { padding: 8px; }
+  .ing-grid { grid-auto-rows: 88px; }
+  .country-grid { grid-auto-rows: 96px; }
+  .pizza-wrap { width: min(100%, 52vh); }
+  #screen-pizza .pizza-large { width: min(100%, 52vh); }
+  #screen-cook .cook-bowl-wrap .pizza { max-width: min(420px, 52vh); }
+  #screen-cook .cook-bowl-wrap .stack { max-width: min(360px, 50vh); }
+  .cook-title { font-size: clamp(24px, 4vw, 36px); margin-top: 2px; }
+  .cook-sub { font-size: clamp(15px, 2.4vw, 22px); margin-bottom: 4px; }
+  .oven-scene { width: min(100%, 380px); padding-bottom: 100px; }
+  .brick-dome { height: 200px; }
+  .result-banner { font-size: clamp(30px, 5vw, 50px); }
+  .letter-board { gap: 10px; padding: 12px 16px; }
+  .letter-circle { width: clamp(72px, 9vw, 110px); height: clamp(72px, 9vw, 110px); font-size: clamp(40px, 5vw, 70px); }
+  .letter-copy .name { font-size: clamp(24px, 3.2vw, 40px); }
+  .letter-copy .from { font-size: clamp(18px, 2.2vw, 28px); }
   .btn-round { width: 68px; height: 68px; font-size: 34px; }
   .mascot-result { width: min(110px, 12vw); }
   #result-chef.chef-pizza { width: min(200px, 22vw); }
