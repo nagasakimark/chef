@@ -206,8 +206,14 @@ function getCountry(id) {
 }
 
 const PIZZA_SAUCES = {
-  tomato: { id: "tomato", name: "Tomato", color: "#d93a2b", dark: "#a82318" },
-  bbq: { id: "bbq", name: "BBQ", color: "#7a3f1d", dark: "#552809" }
+  tomato: { id: "tomato", name: "Tomato", color: "#d8392a", light: "#f06a4a", dark: "#a82318",
+    flecks: [{ color: "#4f7d24", n: 70, w: 5, h: 2.5 }, { color: "#f39a6b", n: 50, w: 4, h: 3 }] },
+  bbq: { id: "bbq", name: "BBQ", color: "#7a3a1a", light: "#a8582c", dark: "#4a2008",
+    flecks: [{ color: "#2e1204", n: 60, w: 3, h: 3 }] },
+  pesto: { id: "pesto", name: "Pesto", color: "#5c8f2c", light: "#8cbf48", dark: "#34611a",
+    flecks: [{ color: "#f3e3a0", n: 60, w: 4, h: 3 }, { color: "#244a10", n: 80, w: 5, h: 2.5 }] },
+  white: { id: "white", name: "White", color: "#f6ecd6", light: "#fffaf0", dark: "#e3cfa6",
+    flecks: [{ color: "#3a3a3a", n: 45, w: 2.5, h: 2.5 }, { color: "#6d9a3a", n: 30, w: 4, h: 2 }] }
 };
 
 // Cheese choices for the pizza maker. colors[] are the raw scatter colors
@@ -312,3 +318,138 @@ function toppingList(ids) {
     return resolveFoodImage(id) || getIngredient("tomato");
   }).filter(Boolean);
 }
+
+// ---------- Burger builder assets (side-view PNGs) ----------
+const BURGER_BUNS = {
+  top: "assets/food/burger/bun_top.png",
+  bottom: "assets/food/burger/bun_bottom.png"
+};
+
+const BURGER_PATTIES = [
+  { id: "patty_beef", name: "Beef", nameJa: "ビーフ", initial: "B", image: "assets/food/burger/patty_beef.png" },
+  { id: "patty_blackpepperbeef", name: "Black Pepper Beef", nameJa: "ブラックペッパービーフ", initial: "B", image: "assets/food/burger/patty_blackpepperbeef.png" },
+  { id: "patty_chicken", name: "Chicken", nameJa: "チキン", initial: "C", image: "assets/food/burger/patty_chicken.png" },
+  { id: "patty_fish", name: "Fish", nameJa: "フィッシュ", initial: "F", image: "assets/food/burger/patty_fish.png" },
+  { id: "patty_pork", name: "Pork", nameJa: "ポーク", initial: "P", image: "assets/food/burger/patty_pork.png" },
+  { id: "patty_spicybeef", name: "Spicy Beef", nameJa: "スパイシービーフ", initial: "S", image: "assets/food/burger/patty_spicybeef.png" },
+  { id: "patty_tofu", name: "Tofu", nameJa: "豆腐", initial: "T", image: "assets/food/burger/patty_tofu.png" },
+  { id: "patty_vegetable", name: "Vegetable", nameJa: "ベジタブル", initial: "V", image: "assets/food/burger/patty_vegetable.png" }
+];
+
+const BURGER_CHEESES = [
+  { id: "american", name: "American", nameJa: "アメリカン", initial: "A", image: "assets/food/burger/cheese_american_unmelted.png", meltImage: "assets/food/burger/cheese_american_melted.png" },
+  { id: "bluecheese", name: "Blue Cheese", nameJa: "ブルーチーズ", initial: "B", image: "assets/food/burger/cheese_bluecheese_unmelted.png", meltImage: "assets/food/burger/cheese_bluecheese_melted.png" },
+  { id: "cheddar", name: "Cheddar", nameJa: "チェダー", initial: "C", image: "assets/food/burger/cheese_cheddar_unmelted.png", meltImage: "assets/food/burger/cheese_cheddar_melted.png" },
+  { id: "mozarella", name: "Mozzarella", nameJa: "モッツァレラ", initial: "M", image: "assets/food/burger/cheese_mozarella_unmelted.png", meltImage: "assets/food/burger/cheese_mozarella_melted.png" },
+  { id: "pepperjack", name: "Pepper Jack", nameJa: "ペッパージャック", initial: "P", image: "assets/food/burger/cheese_pepperjack_unmelted.png", meltImage: "assets/food/burger/cheese_pepperjack_melted.png" },
+  { id: "redleicester", name: "Red Leicester", nameJa: "レッドレスター", initial: "R", image: "assets/food/burger/cheese_redleicester_unmelted.png", meltImage: "assets/food/burger/cheese_redleicester_melted.png" },
+  { id: "swiss", name: "Swiss", nameJa: "スイス", initial: "S", image: "assets/food/burger/cheese_swiss_unmelted.png", meltImage: "assets/food/burger/cheese_swiss_melted.png" }
+];
+
+const BURGER_TOPPINGS = [
+  { id: "burger_avocado", name: "Avocado", nameJa: "アボカド", initial: "A", image: "assets/food/burger/avocado.png" },
+  { id: "burger_bacon", name: "Bacon", nameJa: "ベーコン", initial: "B", image: "assets/food/burger/bacon.png" },
+  { id: "burger_bananas", name: "Banana", nameJa: "バナナ", initial: "B", image: "assets/food/burger/bananas.png" },
+  { id: "burger_bellpeppers", name: "Bell Peppers", nameJa: "パプリカ", initial: "B", image: "assets/food/burger/bellpeppers.png" },
+  { id: "burger_cabbage", name: "Cabbage", nameJa: "キャベツ", initial: "C", image: "assets/food/burger/cabbage.png" },
+  { id: "burger_chocolate", name: "Chocolate", nameJa: "チョコレート", initial: "C", image: "assets/food/burger/chocolate.png" },
+  { id: "burger_coleslaw", name: "Coleslaw", nameJa: "コールスロー", initial: "C", image: "assets/food/burger/coleslaw.png" },
+  { id: "burger_corn", name: "Corn", nameJa: "コーン", initial: "C", image: "assets/food/burger/corn.png" },
+  { id: "burger_cucumber", name: "Cucumber", nameJa: "きゅうり", initial: "C", image: "assets/food/burger/cucumber.png" },
+  { id: "burger_curryandrice", name: "Curry & Rice", nameJa: "カレー", initial: "C", image: "assets/food/burger/curryandrice.png" },
+  { id: "burger_egg", name: "Egg", nameJa: "たまご", initial: "E", image: "assets/food/burger/egg.png" },
+  { id: "burger_eggplant", name: "Eggplant", nameJa: "なす", initial: "E", image: "assets/food/burger/eggplant.png" },
+  { id: "burger_frenchfries", name: "French Fries", nameJa: "フライドポテト", initial: "F", image: "assets/food/burger/frenchfries.png" },
+  { id: "burger_friedrice", name: "Fried Rice", nameJa: "チャーハン", initial: "F", image: "assets/food/burger/friedrice.png" },
+  { id: "burger_gummybears", name: "Gummy Bears", nameJa: "グミ", initial: "G", image: "assets/food/burger/gummybears.png" },
+  { id: "burger_ham", name: "Ham", nameJa: "ハム", initial: "H", image: "assets/food/burger/ham.png" },
+  { id: "burger_hashbrown", name: "Hash Brown", nameJa: "ハッシュブラウン", initial: "H", image: "assets/food/burger/hashbrown.png" },
+  { id: "burger_jalapenos", name: "Jalapenos", nameJa: "ハラペーニョ", initial: "J", image: "assets/food/burger/jalapenos.png" },
+  { id: "burger_kimchi", name: "Kimchi", nameJa: "キムチ", initial: "K", image: "assets/food/burger/kimchi.png" },
+  { id: "burger_lettuce", name: "Lettuce", nameJa: "レタス", initial: "L", image: "assets/food/burger/lettuce.png" },
+  { id: "burger_macaronicheese", name: "Mac & Cheese", nameJa: "マカロニチーズ", initial: "M", image: "assets/food/burger/macaronicheese.png" },
+  { id: "burger_marshmallows", name: "Marshmallows", nameJa: "マシュマロ", initial: "M", image: "assets/food/burger/marshmallows.png" },
+  { id: "burger_mushroom", name: "Mushroom", nameJa: "きのこ", initial: "M", image: "assets/food/burger/mushroom.png" },
+  { id: "burger_onions", name: "Onions", nameJa: "たまねぎ", initial: "O", image: "assets/food/burger/onions.png" },
+  { id: "burger_pickles", name: "Pickles", nameJa: "ピクルス", initial: "P", image: "assets/food/burger/pickles.png" },
+  { id: "burger_pineapple", name: "Pineapple", nameJa: "パイナップル", initial: "P", image: "assets/food/burger/pineapple.png" },
+  { id: "burger_potatochips", name: "Potato Chips", nameJa: "ポテチ", initial: "P", image: "assets/food/burger/potatochips.png" },
+  { id: "burger_redonion", name: "Red Onion", nameJa: "赤たまねぎ", initial: "R", image: "assets/food/burger/redonion.png" },
+  { id: "burger_salami", name: "Salami", nameJa: "サラミ", initial: "S", image: "assets/food/burger/salami.png" },
+  { id: "burger_sausage", name: "Sausage", nameJa: "ソーセージ", initial: "S", image: "assets/food/burger/sausage.png" },
+  { id: "burger_shrimp", name: "Shrimp", nameJa: "えび", initial: "S", image: "assets/food/burger/shrimp.png" },
+  { id: "burger_spaghetti", name: "Spaghetti", nameJa: "スパゲッティ", initial: "S", image: "assets/food/burger/spaghetti.png" },
+  { id: "burger_strawberries", name: "Strawberries", nameJa: "いちご", initial: "S", image: "assets/food/burger/strawberries.png" },
+  { id: "burger_tomatoes", name: "Tomatoes", nameJa: "トマト", initial: "T", image: "assets/food/burger/tomatoes.png" },
+  { id: "burger_turkey", name: "Turkey", nameJa: "ターキー", initial: "T", image: "assets/food/burger/turkey.png" }
+];
+
+function getBurgerPatty(id) { return BURGER_PATTIES.find((p) => p.id === id) || null; }
+function getBurgerCheese(id) { return BURGER_CHEESES.find((c) => c.id === id) || null; }
+function getBurgerTopping(id) { return BURGER_TOPPINGS.find((t) => t.id === id) || null; }
+function getAnyIngredient(id) {
+  return getIngredient(id) || getBurgerTopping(id) || getBurgerPatty(id) || getBurgerCheese(id) || null;
+}
+// Opaque bounding boxes [left, top, right, bottom] of the 400x400 burger PNGs,
+// used by Art.burger() to stack layers by their real visible edges.
+const BURGER_BOXES = {
+  avocado: [24, 106, 379, 336],
+  bacon: [2, 130, 392, 330],
+  bananas: [64, 101, 335, 319],
+  bellpeppers: [49, 121, 340, 302],
+  bun_bottom: [20, 130, 381, 283],
+  bun_top: [14, 106, 386, 298],
+  cabbage: [53, 115, 354, 300],
+  cheese_american_melted: [38, 119, 378, 289],
+  cheese_american_unmelted: [37, 105, 373, 294],
+  cheese_bluecheese_melted: [23, 120, 378, 289],
+  cheese_bluecheese_unmelted: [32, 108, 355, 291],
+  cheese_cheddar_melted: [22, 111, 381, 285],
+  cheese_cheddar_unmelted: [41, 107, 365, 285],
+  cheese_mozarella_melted: [19, 125, 365, 291],
+  cheese_mozarella_unmelted: [20, 105, 384, 293],
+  cheese_pepperjack_melted: [26, 114, 375, 287],
+  cheese_pepperjack_unmelted: [39, 106, 374, 292],
+  cheese_redleicester_melted: [32, 126, 370, 295],
+  cheese_redleicester_unmelted: [43, 114, 352, 292],
+  cheese_swiss_melted: [33, 116, 374, 287],
+  cheese_swiss_unmelted: [43, 98, 366, 294],
+  chocolate: [41, 113, 359, 315],
+  coleslaw: [62, 96, 355, 324],
+  corn: [50, 109, 341, 324],
+  cucumber: [26, 67, 355, 320],
+  curryandrice: [48, 90, 362, 301],
+  egg: [11, 116, 386, 314],
+  eggplant: [49, 103, 341, 312],
+  frenchfries: [40, 113, 362, 315],
+  friedrice: [40, 109, 351, 317],
+  gummybears: [59, 96, 322, 317],
+  ham: [32, 85, 367, 334],
+  hashbrown: [48, 112, 352, 302],
+  jalapenos: [21, 89, 383, 311],
+  kimchi: [64, 111, 356, 329],
+  lettuce: [8, 107, 395, 311],
+  macaronicheese: [54, 111, 369, 308],
+  marshmallows: [50, 97, 347, 323],
+  mushroom: [33, 84, 358, 335],
+  onions: [53, 120, 342, 300],
+  patty_beef: [21, 112, 383, 311],
+  patty_blackpepperbeef: [19, 116, 378, 322],
+  patty_chicken: [26, 109, 375, 310],
+  patty_fish: [22, 108, 373, 311],
+  patty_pork: [17, 119, 376, 324],
+  patty_spicybeef: [29, 121, 379, 324],
+  patty_tofu: [27, 119, 378, 322],
+  patty_vegetable: [23, 118, 380, 325],
+  pickles: [46, 93, 354, 291],
+  pineapple: [24, 67, 372, 334],
+  potatochips: [49, 105, 354, 322],
+  redonion: [18, 106, 388, 299],
+  salami: [0, 86, 368, 321],
+  sausage: [48, 125, 369, 309],
+  shrimp: [60, 114, 354, 309],
+  spaghetti: [46, 95, 353, 305],
+  strawberries: [55, 105, 316, 315],
+  tomatoes: [15, 121, 385, 298],
+  turkey: [18, 90, 379, 309]
+};
