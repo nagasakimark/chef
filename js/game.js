@@ -1577,6 +1577,9 @@
       AudioFx.sizzle();
       await wait(700);
       stage.classList.remove("is-baking");
+      // The baked pizza has fully faded in on top of the raw one by now. Hide
+      // the raw copy so no whole pizza is left behind when the slices part.
+      build.style.visibility = "hidden";
       setCookText("Ding!", "できたて！ あちち！");
       AudioFx.ding();
       stage.classList.add("is-hot");
@@ -1657,8 +1660,9 @@
         cheese: state.pizza.cheese,
         cooked: true,
         sliced: true,
-        parted: true
-      });
+        cutLines: true,
+        labels: true
+      }) + `<div class="tap-chip">👆 Tap the pizza!</div>`;
     }
     if (state.mode === "burger") {
       const tops = state.picks.map((p) => ({ ingredient: p.ingredient, country: p.country }));
@@ -1701,6 +1705,7 @@
       }).join("");
     els.resultList.setAttribute("aria-label", `My ${noun} is ${articleFor(letters[0] || "B")} ${acro} ${noun}.`);
     if (mode === "burger") later(() => attachBurgerPressToggle(), 100);
+    if (mode === "pizza") later(() => attachPizzaPressToggle(), 100);
     els.resultChef.innerHTML = Art.chef(mode);
     els.resultChef.className = `mascot mascot-result chef-${mode}`;
     burstConfetti();
@@ -1723,6 +1728,33 @@
     }
     burger.addEventListener("click", toggle);
     burger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    });
+  }
+
+  // Tap the finished pizza to slide the slices apart and read each
+  // ingredient's English name; tap again to push them back together.
+  function attachPizzaPressToggle() {
+    const pizza = els.resultBowl.querySelector(".pizza");
+    if (!pizza) return;
+    pizza.classList.add("is-tappable");
+    pizza.setAttribute("role", "button");
+    pizza.setAttribute("tabindex", "0");
+    pizza.setAttribute("aria-pressed", "false");
+    pizza.setAttribute("aria-label", "Tap to pull the pizza slices apart");
+    const chip = els.resultBowl.querySelector(".tap-chip");
+    function toggle() {
+      const open = pizza.classList.toggle("is-parted");
+      pizza.setAttribute("aria-pressed", open ? "true" : "false");
+      // The hint has done its job after the first tap (and would sit on top of a label on small screens).
+      if (chip) chip.classList.add("is-done");
+      if (open) AudioFx.plop(); else AudioFx.thump(2);
+      pizza.classList.remove("is-bounce");
+      void pizza.offsetWidth;
+      if (!open) pizza.classList.add("is-bounce");
+    }
+    pizza.addEventListener("click", toggle);
+    pizza.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   }
@@ -1787,8 +1819,10 @@
       .replace(/&nbsp;/g, "&#160;")
       .replace(/<svg(?![^>]*xmlns=)/g, '<svg xmlns="http://www.w3.org/2000/svg"');
     const food = els.resultBowl.cloneNode(true);
-    food.querySelectorAll(".tap-chip, .burger-label, .cook-sparkles").forEach((node) => node.remove());
+    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .cook-sparkles").forEach((node) => node.remove());
     food.querySelectorAll(".is-exploded").forEach((node) => node.classList.remove("is-exploded"));
+    // The saved picture keeps the pizza sliced apart, as it always has.
+    food.querySelectorAll(".pizza.is-sliced").forEach((node) => node.classList.add("is-parted"));
     const defs = document.querySelector(".svg-defs");
     const [resultBowl, resultList, chef, title, defsHtml] = await Promise.all([
       inlineAssets(xhtml(food.innerHTML)),
