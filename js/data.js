@@ -85,116 +85,94 @@ const COUNTRY_LIST = [
 
 const COUNTRIES = Object.fromEntries(COUNTRY_LIST.map((country) => [country.id, country]));
 
-function food(id, name, nameJa, file) {
+function food(id, name, nameJa) {
   return {
     id,
     name,
     nameJa,
     initial: name.charAt(0).toUpperCase(),
-    image: `assets/food/${file}.svg`
+    image: `assets/food/pizza/${id}.png`
   };
 }
 
+// Champon + pizza ingredient list (cut-out illustrations, assets/food/pizza/<id>.png).
+// The acronym on the result screen uses the first letter of `name`.
 const INGREDIENTS = [
-  food("apple", "Apple", "りんご", "apple"),
-  food("anchovy", "Anchovy", "アンチョビ", "fish"),
-  food("artichoke", "Artichoke", "アーティチョーク", "broccoli"),
-  food("avocado", "Avocado", "アボカド", "avocado"),
-  food("bacon", "Bacon", "ベーコン", "bacon"),
-  food("banana", "Banana", "バナナ", "banana"),
-  food("beef", "Beef", "牛肉", "pork"),
-  food("blueberry", "Blueberry", "ブルーベリー", "blueberry"),
-  food("broccoli", "Broccoli", "ブロッコリー", "broccoli"),
-  food("cabbage", "Cabbage", "キャベツ", "cabbage"),
-  food("carrot", "Carrot", "にんじん", "carrot"),
-  food("cheese", "Cheese", "チーズ", "cheese"),
-  food("cherry", "Cherry", "さくらんぼ", "cherry"),
-  food("chicken", "Chicken", "鶏肉", "chicken"),
-  food("corn", "Corn", "とうもろこし", "corn"),
-  food("cucumber", "Cucumber", "きゅうり", "cucumber"),
-  food("dango", "Dango", "団子", "dumpling"),
-  food("donut", "Donut", "ドーナツ", "peach"),
-  food("duck", "Duck", "鴨肉", "chicken"),
-  food("dumpling", "Dumpling", "餃子", "dumpling"),
-  food("edamame", "Edamame", "枝豆", "edamame"),
-  food("egg", "Egg", "卵", "egg"),
-  food("eggplant", "Eggplant", "ナス", "eggplant"),
-  food("fig", "Fig", "いちじく", "grapes"),
-  food("fish", "Fish", "魚", "fish"),
-  food("fishcake", "Fish Cake", "ナルト", "fishcake"),
-  food("flan", "Flan", "フラン", "egg"),
-  food("fries", "Fries", "フライドポテト", "potato"),
-  food("furikake", "Furikake", "ふりかけ", "rice"),
-  food("garlic", "Garlic", "にんにく", "garlic"),
-  food("ginger", "Ginger", "生姜", "ginger"),
-  food("grapes", "Grapes", "ぶどう", "grapes"),
-  food("gyoza", "Gyoza", "焼き餃子", "dumpling"),
-  food("ham", "Ham", "ハム", "bacon"),
-  food("hamburger", "Hamburger", "ハンバーガー", "taco"),
-  food("hayashi", "Hayashi Rice", "ハヤシライス", "rice"),
-  food("honey", "Honey", "蜂蜜", "honey"),
-  food("hotdog", "Hot Dog", "ホットドッグ", "sausage"),
-  food("icecream", "Ice Cream", "アイスクリーム", "honey"),
-  food("jackfruit", "Jack Fruit", "ジャックフルーツ", "watermelon"),
-  food("jalapeno", "Jalapeno", "ハラペーニョ", "peppers"),
-  food("jam", "Jam", "ジャム", "strawberry"),
-  food("jelly", "Jelly", "ゼリー", "grapes"),
-  food("kale", "Kale", "ケール", "broccoli"),
-  food("kimchi", "Kimchi", "キムチ", "cabbage"),
-  food("kiwi", "Kiwi", "キウイ", "kiwi"),
-  food("lemon", "Lemon", "レモン", "lemon"),
-  food("lettuce", "Lettuce", "レタス", "cabbage"),
-  food("lobster", "Lobster", "ロブスター", "lobster"),
-  food("lollipop", "Lollipop", "ロリポップ", "cherry"),
-  food("mango", "Mango", "マンゴー", "mango"),
-  food("matcha", "Matcha", "抹茶", "edamame"),
-  food("meatball", "Meatball", "ミートボール", "sausage"),
-  food("mushroom", "Mushroom", "きのこ", "mushroom"),
-  food("natto", "Natto", "納豆", "peanuts"),
-  food("noodles", "Noodles", "麺", "noodles"),
-  food("nori", "Nori", "海苔", "fish"),
-  food("nuts", "Nuts", "ナッツ", "peanuts"),
-  food("octopus", "Octopus", "たこ", "octopus"),
-  food("omelette", "Omelette", "オムレツ", "egg"),
-  food("onion", "Onion", "玉ねぎ", "onion"),
-  food("orange", "Orange", "オレンジ", "orange"),
-  food("peach", "Peach", "桃", "peach"),
-  food("peanuts", "Peanuts", "ピーナッツ", "peanuts"),
-  food("pear", "Pear", "梨", "pear"),
-  food("peppers", "Peppers", "ピーマン", "peppers"),
-  food("pineapple", "Pineapple", "パイナップル", "pineapple"),
-  food("pizza", "Pizza", "ピザ", "cheese"),
-  food("pork", "Pork", "豚肉", "pork"),
-  food("potato", "Potato", "じゃがいも", "potato"),
-  food("quesadilla", "Quesadilla", "ケサディーヤ", "taco"),
-  food("quiche", "Quiche", "キッシュ", "egg"),
-  food("radish", "Radish", "大根", "carrot"),
-  food("ramen", "Ramen", "ラーメン", "noodles"),
-  food("raspberry", "Raspberry", "ラズベリー", "strawberry"),
-  food("rice", "Rice", "ご飯", "rice"),
-  food("salmon", "Salmon", "鮭", "fish"),
-  food("sausage", "Sausage", "ソーセージ", "sausage"),
-  food("shrimp", "Shrimp", "海老", "shrimp"),
-  food("springonion", "Spring Onion", "青ネギ", "onion"),
-  food("squid", "Squid", "イカ", "squid"),
-  food("strawberry", "Strawberry", "いちご", "strawberry"),
-  food("sushi", "Sushi", "寿司", "sushi"),
-  food("taco", "Taco", "タコス", "taco"),
-  food("tempura", "Tempura", "天ぷら", "fried-shrimp"),
-  food("tofu", "Tofu", "豆腐", "cheese"),
-  food("tomato", "Tomato", "トマト", "tomato"),
-  food("ume", "Ume", "梅", "cherry"),
-  food("vegetable", "Vegetable", "野菜", "broccoli"),
-  food("venison", "Venison", "鹿肉", "pork"),
-  food("waffle", "Waffle", "ワッフル", "cheese"),
-  food("wagyu", "Wagyu", "和牛", "pork"),
-  food("wakame", "Wakame", "わかめ", "edamame"),
-  food("watermelon", "Watermelon", "スイカ", "watermelon"),
-  food("xigua", "Xigua", "西瓜", "watermelon"),
-  food("yakitori", "Yakitori", "焼き鳥", "chicken"),
-  food("yam", "Yam", "山芋", "potato"),
-  food("yuzu", "Yuzu", "柚子", "lemon"),
-  food("zucchini", "Zucchini", "ズッキーニ", "cucumber")
+  food("apple", "Apple", "りんご"),
+  food("anchovy", "Anchovy", "アンチョビ"),
+  food("artichoke", "Artichoke", "アーティチョーク"),
+  food("bacon", "Bacon", "ベーコン"),
+  food("banana", "Banana", "バナナ"),
+  food("beef", "Beef", "牛肉"),
+  food("blueberry", "Blueberry", "ブルーベリー"),
+  food("broccoli", "Broccoli", "ブロッコリー"),
+  food("cabbage", "Cabbage", "キャベツ"),
+  food("carrot", "Carrot", "にんじん"),
+  food("tomato", "Tomato", "トマト"),
+  food("chicken", "Chicken", "鶏肉"),
+  food("corn", "Corn", "とうもろこし"),
+  food("cucumber", "Cucumber", "きゅうり"),
+  food("dango", "Dango", "団子"),
+  food("donut", "Donut", "ドーナツ"),
+  food("duck", "Duck", "鴨肉"),
+  food("dumpling", "Dumpling", "水餃子"),
+  food("edamame", "Edamame", "枝豆"),
+  food("egg", "Egg", "卵"),
+  food("eggplant", "Eggplant", "ナス"),
+  food("fig", "Fig", "いちじく"),
+  food("fish", "Fish", "魚"),
+  food("fishcake", "Fish Cake", "なると"),
+  food("fries", "Fries", "フライドポテト"),
+  food("furikake", "Furikake", "ふりかけ"),
+  food("garlic", "Garlic", "にんにく"),
+  food("ginger", "Ginger", "生姜"),
+  food("grapes", "Grapes", "ぶどう"),
+  food("gyoza", "Gyoza", "焼き餃子"),
+  food("ham", "Ham", "ハム"),
+  food("hamburger", "Hamburger", "ハンバーグ"),
+  food("hotdog", "Hot Dog", "ホットドッグ"),
+  food("jalapenos", "Jalapenos", "ハラペーニョ"),
+  food("jam", "Jam", "ジャム"),
+  food("jelly", "Jelly", "ゼリー"),
+  food("kimchi", "Kimchi", "キムチ"),
+  food("kiwi", "Kiwi", "キウイ"),
+  food("lemon", "Lemon", "レモン"),
+  food("lettuce", "Lettuce", "レタス"),
+  food("lobster", "Lobster", "ロブスター"),
+  food("mango", "Mango", "マンゴー"),
+  food("meatballs", "Meatballs", "ミートボール"),
+  food("mushrooms", "Mushrooms", "きのこ"),
+  food("natto", "Natto", "納豆"),
+  food("noodles", "Noodles", "麺"),
+  food("nori", "Nori", "海苔"),
+  food("nuts", "Nuts", "ナッツ"),
+  food("octopus", "Octopus", "たこ"),
+  food("omelette", "Omelette", "オムレツ"),
+  food("onion", "Onion", "玉ねぎ"),
+  food("orange", "Orange", "オレンジ"),
+  food("peach", "Peach", "桃"),
+  food("pear", "Pear", "梨"),
+  food("peppers", "Peppers", "ピーマン"),
+  food("pineapple", "Pineapple", "パイナップル"),
+  food("pork", "Pork", "豚肉"),
+  food("potato", "Potato", "じゃがいも"),
+  food("radish", "Radish", "大根"),
+  food("raspberry", "Raspberry", "ラズベリー"),
+  food("salmon", "Salmon", "鮭"),
+  food("sausage", "Sausage", "ソーセージ"),
+  food("shrimp", "Shrimp", "海老"),
+  food("greenonion", "Green Onion", "青ネギ"),
+  food("squid", "Squid", "イカ"),
+  food("strawberry", "Strawberry", "いちご"),
+  food("tacomeat", "Taco Meat", "タコミート"),
+  food("tempura", "Tempura", "天ぷら"),
+  food("tofu", "Tofu", "豆腐"),
+  food("cherries", "Cherries", "さくらんぼ"),
+  food("waffle", "Waffle", "ワッフル"),
+  food("watermelon", "Watermelon", "スイカ"),
+  food("yam", "Yam", "さつまいも"),
+  food("yuzu", "Yuzu", "柚子"),
+  food("zucchini", "Zucchini", "ズッキーニ")
 ];
 
 function getIngredient(id) {
@@ -252,23 +230,23 @@ function getCheese(type) {
 
 // Toppings that read well top-down on a pizza (reuse Twemoji placeholders).
 const PIZZA_TOPPING_IDS = [
-  "cheese", "tomato", "bacon", "sausage", "mushroom", "onion",
+  "tomato", "bacon", "sausage", "mushrooms", "onion",
   "peppers", "corn", "pineapple", "egg", "ham", "chicken"
 ];
 
 // Fillings that stack well side-view for burger / sandwich.
 const BURGER_FILLING_IDS = [
-  "beef", "cheese", "bacon", "lettuce", "tomato", "onion",
-  "egg", "cucumber", "corn", "mushroom", "avocado", "sausage"
+  "beef", "bacon", "lettuce", "tomato", "onion",
+  "egg", "cucumber", "corn", "mushrooms", "sausage"
 ];
 
 const SANDWICH_FILLING_IDS = [
-  "ham", "chicken", "cheese", "egg", "lettuce", "tomato",
-  "cucumber", "onion", "avocado", "bacon", "corn", "tuna"
+  "ham", "chicken", "egg", "lettuce", "tomato",
+  "cucumber", "onion", "bacon", "corn", "tuna"
 ];
 
 // "tuna" has no dedicated svg yet — fall back to fish.
-const INGREDIENT_ALIASES = { tuna: "fish", beef: "pork", lettuce: "cabbage", ham: "bacon" };
+const INGREDIENT_ALIASES = { tuna: "fish" };
 
 function resolveFoodImage(id) {
   const direct = getIngredient(id);
@@ -294,7 +272,7 @@ const LAYER_STYLES = {
   egg: { color: "#fff59d", edge: "#f9a825", label: "Egg" },
   cucumber: { color: "#43a047", edge: "#1b5e20", label: "Pickles" },
   corn: { color: "#ffee58", edge: "#f9a825", label: "Corn" },
-  mushroom: { color: "#bcaaa4", edge: "#6d4c41", label: "Mushroom" },
+  mushrooms: { color: "#bcaaa4", edge: "#6d4c41", label: "Mushroom" },
   avocado: { color: "#9ccc65", edge: "#558b2f", label: "Avocado" },
   sausage: { color: "#a1887f", edge: "#5d4037", label: "Sausage" },
   tuna: { color: "#90caf9", edge: "#1565c0", label: "Tuna" },
@@ -306,10 +284,10 @@ function layerStyle(id) {
 }
 
 const VIRTUAL_INGREDIENTS = {
-  tuna: { id: "tuna", name: "Tuna", nameJa: "ツナ", initial: "T", image: "assets/food/fish.svg" },
-  beef: { id: "beef", name: "Beef Patty", nameJa: "パティ", initial: "B", image: "assets/food/pork.svg" },
-  lettuce: { id: "lettuce", name: "Lettuce", nameJa: "レタス", initial: "L", image: "assets/food/cabbage.svg" },
-  ham: { id: "ham", name: "Ham", nameJa: "ハム", initial: "H", image: "assets/food/bacon.svg" }
+  tuna: { id: "tuna", name: "Tuna", nameJa: "ツナ", initial: "T", image: "assets/food/pizza/fish.png" },
+  beef: { id: "beef", name: "Beef Patty", nameJa: "パティ", initial: "B", image: "assets/food/pizza/beef.png" },
+  lettuce: { id: "lettuce", name: "Lettuce", nameJa: "レタス", initial: "L", image: "assets/food/pizza/lettuce.png" },
+  ham: { id: "ham", name: "Ham", nameJa: "ハム", initial: "H", image: "assets/food/pizza/ham.png" }
 };
 
 function toppingList(ids) {

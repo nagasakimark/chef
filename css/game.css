@@ -517,8 +517,9 @@ button {
 }
 
 .ing-btn .food-img {
-  width: 44px;
-  height: 44px;
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
 }
 
 .ing-btn span {
@@ -1067,7 +1068,7 @@ button {
 @media (max-width: 1100px) {
   .ing-grid { grid-template-columns: repeat(4, 1fr); }
   .country-grid { grid-template-columns: repeat(4, 1fr); }
-  .ing-btn .food-img { width: 40px; height: 40px; }
+  .ing-btn .food-img { width: 52px; height: 52px; }
   .bowl-dock { width: 200px; }
   .choice-hero { width: 210px; }
 }
@@ -1538,7 +1539,7 @@ button {
   .dock-label { font-size: 14px; font-family: var(--font-display); text-shadow: 2px 2px 0 var(--ink-deep); box-shadow: var(--shadow); }
   .table-green { padding: 8px; border-width: 5px; border-radius: 20px; }
   .ing-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 100px; gap: 8px; }
-  .ing-btn .food-img { width: 34px; height: 34px; }
+  .ing-btn .food-img { width: 44px; height: 44px; }
   .ing-btn .ing-ja { font-size: 11px; }
   .ing-btn .ing-en { font-size: 9px; }
 
@@ -2114,6 +2115,18 @@ button {
 .pz-baked .pizza-slices path { stroke-dasharray: 100; stroke-dashoffset: 100; }
 .pz-stage.is-slicing .pz-baked .pizza-slices path { animation: cutLine .32s ease-in forwards; animation-delay: calc(var(--i) * .32s); }
 @keyframes cutLine { to { stroke-dashoffset: 0; } }
+
+/* real slices: 8 clipped wedges that slide apart */
+.pizza.is-sliced .pz-slice-wrap {
+  position: absolute; inset: 0;
+  transition: transform .65s cubic-bezier(.3, 1.45, .5, 1);
+  filter: drop-shadow(0 2px 2px rgba(60, 25, 0, .38));
+}
+.pizza.is-sliced .pz-slice { position: absolute; inset: 0; }
+.pizza.is-sliced.is-parted .pz-slice-wrap,
+.pz-stage.is-parted .pz-slice-wrap { transform: translate(var(--dx), var(--dy)) scale(.85); }
+.pz-stage.is-parted .pizza-slices { opacity: 0; transition: opacity .2s; }
+
 
 /* docks: give the live preview real width so fixed-ratio art can size itself */
 #pick-bowl, #country-bowl { width: 100%; display: flex; justify-content: center; }

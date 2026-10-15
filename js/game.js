@@ -1505,7 +1505,7 @@
   function cookPizza() {
     const { sauceUrl, drops, cheese } = state.pizza;
     const raw = Art.pizza(sauceUrl, drops, { size: "free", cheese });
-    const baked = Art.pizza(sauceUrl, drops, { size: "free", cheese, cooked: true, sliced: true });
+    const baked = Art.pizza(sauceUrl, drops, { size: "free", cheese, cooked: true, sliced: true, cutLines: true });
     els.cookBowl.innerHTML = Art.pizzaCookStage(raw, baked);
     const stage = els.cookBowl.querySelector(".pz-stage");
     const mover = stage.querySelector(".pz-mover");
@@ -1592,6 +1592,9 @@
       setCookText("Cut!", "8つに カット！");
       [0, 1, 2, 3].forEach((i) => later(() => AudioFx.chop(), i * 320 + 60));
       await wait(1400);
+      stage.classList.add("is-parted");
+      AudioFx.plop();
+      await wait(800);
       stage.insertAdjacentHTML("beforeend", `<div class="cook-sparkles">${sparkleBits(12)}</div>`);
       finishCook(900);
     })();
@@ -1653,7 +1656,8 @@
         size: "xl",
         cheese: state.pizza.cheese,
         cooked: true,
-        sliced: true
+        sliced: true,
+        parted: true
       });
     }
     if (state.mode === "burger") {

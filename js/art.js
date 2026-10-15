@@ -1,7 +1,7 @@
 const Art = {
   ingredient(id) {
     const ing = getIngredient(id);
-    const src = ing ? ing.image : "assets/food/tomato.svg";
+    const src = ing ? ing.image : "assets/food/pizza/tomato.png";
     const name = ing ? ing.name : "";
     return `<img class="food-img" src="${src}" alt="${name}">`;
   },
@@ -173,16 +173,40 @@ const Art = {
     // Cooked: photo overlays (cheddar first, mozzarella on top). Raw keeps
     // the scatter pieces below and never uses the photos.
     const meltImgs = cooked && cheeseType ? this.cookedCheese(cheeseType) : "";
-    return `
-      <div class="pizza pizza-${size}${cooked ? " is-cooked" : ""}">
+    const layers = `
         ${this.pizzaBase(cooked)}
         ${sauceUrl ? `<img class="pizza-sauce-img${cooked ? " is-baked" : ""}" src="${sauceUrl}" alt="">` : ""}
         ${meltImgs}
         ${cheese && !cooked && (cheese.type || cheese.id) ? `<div class="pizza-cheese"><img class="pizza-cheese-img" src="${this.rawCheese(cheese.type || cheese.id)}" alt=""></div>` : ""}
         <div class="pizza-toppings">${tops}</div>
-        ${cooked ? `<div class="pizza-char" aria-hidden="true"></div>` : ""}
-        ${options.sliced ? this.pizzaSlices() : ""}
+        ${cooked ? `<div class="pizza-char" aria-hidden="true"></div>` : ""}`;
+    if (options.sliced) {
+      return `
+      <div class="pizza pizza-${size} is-cooked is-sliced${options.parted ? " is-parted" : ""}">
+        ${this.pizzaWedges(layers)}
+        ${options.cutLines ? this.pizzaSlices() : ""}
       </div>`;
+    }
+    return `
+      <div class="pizza pizza-${size}${cooked ? " is-cooked" : ""}">${layers}
+      </div>`;
+  },
+
+  // The baked pizza as 8 real wedges: the same layers repeated, each clipped
+  // to a 45deg slice. CSS slides every wedge out along its own angle.
+  pizzaWedges(layers) {
+    const pt = (deg, r) => {
+      const a = (deg * Math.PI) / 180;
+      return `${(50 + r * Math.cos(a)).toFixed(2)}% ${(50 + r * Math.sin(a)).toFixed(2)}%`;
+    };
+    return [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
+      const a0 = k * 45, a1 = a0 + 45, mid = a0 + 22.5;
+      const poly = `polygon(50% 50%, ${pt(a0, 90)}, ${pt(mid, 90 / Math.cos(Math.PI / 8))}, ${pt(a1, 90)})`;
+      const m = (mid * Math.PI) / 180;
+      const d = 8.5;
+      return `<div class="pz-slice-wrap" style="--dx:${(d * Math.cos(m)).toFixed(2)}%;--dy:${(d * Math.sin(m)).toFixed(2)}%">` +
+        `<div class="pz-slice" style="clip-path:${poly}">${layers}</div></div>`;
+    }).join("");
   },
 
   // 8 slice cuts from the centre, drawn one after another when .is-slicing.
