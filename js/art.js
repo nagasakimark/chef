@@ -184,13 +184,45 @@ const Art = {
       return `
       <div class="pizza pizza-${size} is-cooked is-sliced${options.parted ? " is-parted" : ""}">
         ${this.pizzaWedges(layers)}
+        ${options.cutLines ? this.pizzaPulls(cheeseType) : ""}
         ${options.cutLines ? this.pizzaSlices() : ""}
-        ${options.labels ? this.pizzaLabels(drops) : ""}
       </div>`;
     }
     return `
       <div class="pizza pizza-${size}${cooked ? " is-cooked" : ""}">${layers}
       </div>`;
+  },
+
+  // Cheese strands that bridge the gap between neighbouring slices while they
+  // slide apart, then snap back onto their own slice. Each strand is two halves
+  // anchored at the slices' edges; geometry mirrors the wedge transform
+  // (scale .85 + 8.5% nudge along each wedge's middle angle).
+  pizzaPulls(cheeseType) {
+    const cheeseDef = cheeseType && typeof getCheese === "function" ? getCheese(cheeseType) : null;
+    const melt = (cheeseDef && cheeseDef.melt) || { base: "#ffe38a", wash: "#eba02f" };
+    const D = 8.5, S = 0.85;
+    const gap = 2 * D * Math.sin(Math.PI / 8);
+    const out = [];
+    for (let k = 0; k < 8; k++) {
+      const a = k * 45, rad = (a * Math.PI) / 180;
+      const ux = Math.cos(rad), uy = Math.sin(rad);
+      // a few strands per cut, only in some places
+      const radii = [11, 20, 29, 38].filter(() => Math.random() < 0.55);
+      if (!radii.length) radii.push(20 + Math.random() * 12);
+      radii.forEach((r0) => {
+        const r = r0 + (Math.random() - 0.5) * 4;
+        const x0 = 50 + r * ux, y0 = 50 + r * uy;
+        const m = S * r + D * Math.cos(Math.PI / 8);
+        const x1 = 50 + m * ux, y1 = 50 + m * uy;
+        const th = 1.7 + Math.random() * 1.3;
+        const snap = 0.3 + Math.random() * 0.3;
+        const len = gap * (0.95 + Math.random() * 0.25);
+        out.push(`<span class="pull" style="--x0:${x0.toFixed(2)}%;--y0:${y0.toFixed(2)}%;--x1:${x1.toFixed(2)}%;--y1:${y1.toFixed(2)}%;` +
+          `--rot:${a + 90}deg;--len:${len.toFixed(2)}%;--th:${th.toFixed(2)}%;--snap:${snap.toFixed(2)}s">` +
+          `<i class="h h1"></i><i class="h h2"></i></span>`);
+      });
+    }
+    return `<div class="pizza-pulls" aria-hidden="true" style="--c1:${melt.base};--c2:${melt.wash}">${out.join("")}</div>`;
   },
 
   // The baked pizza as 8 real wedges: the same layers repeated, each clipped
@@ -208,77 +240,6 @@ const Art = {
       return `<div class="pz-slice-wrap" style="--dx:${(d * Math.cos(m)).toFixed(2)}%;--dy:${(d * Math.sin(m)).toFixed(2)}%">` +
         `<div class="pz-slice" style="clip-path:${poly}">${layers}</div></div>`;
     }).join("");
-  },
-
-  // One English name tag per ingredient for the "tap to pull the slices apart"
-  // view. Each tag points at a single topping of that ingredient, at the spot
-  // where it lands once its wedge has slid out (same maths as the CSS: the
-  // wedge is scaled to .85 about the centre, then pushed 8.5% along its angle).
-  pizzaLabels(drops) {
-    const PART_SCALE = 0.85, PART_PUSH = 8.5;
-    const spot = (d) => {
-      const x = d.x !== undefined ? d.x : 50;
-      const y = d.y !== undefined ? d.y : 50;
-      const dx = x - 50, dy = y - 50;
-      const r = Math.hypot(dx, dy);
-      const deg = ((Math.atan2(dy, dx) * 180) / Math.PI + 360) % 360;
-      const k = Math.floor(deg / 45);
-      const mid = ((k * 45 + 22.5) * Math.PI) / 180;
-      // how far the topping sits from the nearest cut line (in % of the box)
-      const off = Math.abs(((deg % 45) + 45) % 45 - 22.5);
-      const clearance = r * Math.sin(((22.5 - off) * Math.PI) / 180);
-      return {
-        x: 50 + dx * PART_SCALE + PART_PUSH * Math.cos(mid),
-        y: 50 + dy * PART_SCALE + PART_PUSH * Math.sin(mid),
-        clearance
-      };
-    };
-    // Group the drops by ingredient: one tag each.
-    const groups = [];
-    (drops || []).forEach((d) => {
-      const ing = d.ing || d.ingredient;
-      if (!ing) return;
-      let g = groups.find((it) => it.ing.id === ing.id);
-      if (!g) { g = { ing, spots: [] }; groups.push(g); }
-      g.spots.push(spot(d));
-    });
-    if (!groups.length) return "";
-    // Pick one topping per ingredient so the tags end up far apart and away
-    // from the cut lines (a topping straddling a cut gets split in two).
-    let best = null;
-    const walk = (i, chosen) => {
-      if (i === groups.length) {
-        let gap = Infinity;
-        for (let a = 0; a < chosen.length; a += 1) {
-          for (let b = a + 1; b < chosen.length; b += 1) {
-            gap = Math.min(gap, Math.hypot(chosen[a].x - chosen[b].x, (chosen[a].y - chosen[b].y) * 1.8));
-          }
-        }
-        const clear = Math.min(...chosen.map((c) => Math.min(c.clearance, 8)));
-        const score = Math.min(gap, 60) + clear * 1.5;
-        if (!best || score > best.score) best = { score, chosen: chosen.slice() };
-        return;
-      }
-      groups[i].spots.forEach((s) => { chosen.push(s); walk(i + 1, chosen); chosen.pop(); });
-    };
-    walk(0, []);
-    // Tags sit just under their topping; keep them inside the box and nudge
-    // any that would land on top of each other.
-    const tags = groups.map((g, i) => ({
-      name: g.ing.name,
-      x: Math.min(82, Math.max(18, best.chosen[i].x)),
-      y: best.chosen[i].y + 4
-    }));
-    for (let pass = 0; pass < 6; pass += 1) {
-      tags.slice().sort((a, b) => a.y - b.y).forEach((t, i, sorted) => {
-        for (let j = 0; j < i; j += 1) {
-          if (Math.abs(t.x - sorted[j].x) < 30 && Math.abs(t.y - sorted[j].y) < 10) t.y = sorted[j].y + 10;
-        }
-      });
-    }
-    return tags.map((t, i) =>
-      `<span class="pizza-label" style="--x:${t.x.toFixed(2)}%;--y:${Math.min(t.y, 94).toFixed(2)}%;--d:${(0.07 * i).toFixed(2)}s">${t.name}</span>`
-    ).join("");
   },
 
   // 8 slice cuts from the centre, drawn one after another when .is-slicing.
