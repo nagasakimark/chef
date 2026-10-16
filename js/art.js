@@ -814,18 +814,15 @@ const Art = {
         `<g class="bw-splash"><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="190" ry="60"/><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="120" ry="38"/></g>` +
         `<g class="bw-drops">${drops}</g></g>`;
     }).join("");
-    // Result screen: touch/hover zones + name tags for soup, noodles and each topping
+    // Result screen: tap the bowl and the three toppings lift out together,
+    // each with its name tag (see .is-open in game.css).
     let hits = "", labelHtml = "";
     if (options.labels) {
-      const zones = [
-        { id: "soup", name: "Soup", x: 668, y: 905, rx: 360, ry: 50, ly: 890 },
-        { id: "noodles", name: "Noodles", x: 668, y: 620, rx: 420, ry: 210, ly: 560 },
-        ...ings.map((ing, i) => ({ id: `t${i}`, name: ing.name, x: slots[i].x, y: slots[i].y + 30, rx: 190, ry: 120, ly: slots[i].y + 30 }))
-      ];
-      hits = `<g class="bowl-hits">${zones.map((z) =>
-        `<ellipse class="bowl-hit" data-zone="${z.id}" tabindex="0" role="button" aria-label="${z.name}" cx="${z.x}" cy="${z.y}" rx="${z.rx}" ry="${z.ry}"/>`).join("")}</g>`;
-      labelHtml = zones.map((z) =>
-        `<span class="bowl-label" data-for="${z.id}" style="--x:${(z.x / 13.49).toFixed(2)}%;--y:${(z.ly / 11.66).toFixed(2)}%">${z.name}</span>`).join("");
+      const tagAt = [[290, 75], [1060, 75], [672, 735]];
+      const cols = options.colors || ["#e53935", "#1e88e5", "#43a047"];
+      labelHtml = ings.map((ing, i) =>
+        `<span class="bowl-label" data-for="t${i}" style="--x:${(tagAt[i][0] / 13.49).toFixed(2)}%;--y:${(tagAt[i][1] / 11.66).toFixed(2)}%;--c:${cols[i % cols.length]};--d:${(0.18 + i * 0.14).toFixed(2)}s">` +
+        `<i>${(ing.name || "?").charAt(0).toUpperCase()}</i>${ing.name}</span>`).join("");
     }
     const bubbles = Array.from({ length: 9 }, (_, n) => {
       const a = n * 2.4;

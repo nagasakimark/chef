@@ -2736,41 +2736,41 @@ body[data-screen="result"] .hud-right { align-items: center; }
   #screen-title .mode-card { height: 190px; }
 }
 
-/* champon result: touch / hover the food to see its name */
-.bowl-hits { pointer-events: none; }
-.bowl-hit { fill: transparent; pointer-events: all; cursor: pointer; outline: none; }
+/* champon result: tap the bowl and all three toppings lift out with name tags */
+.bowl.is-tappable { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+.bowl.is-tappable:focus-visible { outline: 4px solid #fff59d; outline-offset: 6px; border-radius: 24px; }
 .bowl-label {
   position: absolute; left: var(--x); top: var(--y);
-  transform: translate(-50%, -50%) scale(.4); opacity: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  transform: translate(-50%, -50%) scale(.2) rotate(-8deg); opacity: 0;
   white-space: nowrap; pointer-events: none; z-index: 40;
   font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(14px, 2.6vh, 24px); line-height: 1; color: var(--ink-deep);
+  font-size: clamp(15px, 2.9vh, 26px); line-height: 1; color: var(--ink-deep);
   background: #fffdf4; border: 3px solid var(--ink-deep); border-radius: 999px;
-  padding: 6px 14px 5px; box-shadow: 0 3px 0 var(--ink-deep);
-  transition: transform .3s cubic-bezier(.2,1.6,.4,1), opacity .15s ease;
+  padding: 4px 14px 4px 5px; box-shadow: 0 4px 0 var(--ink-deep);
+  transition: transform .2s ease, opacity .15s ease;
 }
-.bowl[data-lit="soup"] .bowl-label[data-for="soup"],
-.bowl[data-lit="noodles"] .bowl-label[data-for="noodles"],
-.bowl[data-lit="t0"] .bowl-label[data-for="t0"],
-.bowl[data-lit="t1"] .bowl-label[data-for="t1"],
-.bowl[data-lit="t2"] .bowl-label[data-for="t2"] { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-/* the touched food hops / wiggles */
-.bowl[data-lit="t0"] .bw-t0 .tp-fly, .bowl[data-lit="t1"] .bw-t1 .tp-fly, .bowl[data-lit="t2"] .bw-t2 .tp-fly {
-  transform-box: fill-box; transform-origin: 50% 80%; animation: tpHop .5s cubic-bezier(.3,1.6,.5,1) calc(var(--k) * .06s);
+.bowl-label i {
+  font-style: normal; color: #fff; background: var(--c);
+  width: 1.5em; height: 1.5em; border-radius: 50%; display: grid; place-items: center;
+  border: 2px solid var(--ink-deep); text-shadow: 0 2px 0 rgba(0,0,0,.25);
 }
-@keyframes tpHop {
-  0% { transform: none; }
-  35% { transform: translateY(-34px) scale(.95, 1.1); }
-  70% { transform: translateY(4px) scale(1.06, .92); }
-  100% { transform: none; }
+.bowl.is-open .bowl-label {
+  opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0);
+  transition: transform .5s cubic-bezier(.2,1.8,.4,1) var(--d), opacity .15s ease var(--d);
 }
-.bowl[data-lit="noodles"] .bw-noodles { transform-box: view-box; transform-origin: 668px 640px; animation: noodleWiggle .6s ease-in-out; }
+.bowl.is-open .bowl-label { animation: tagBob 1.8s ease-in-out calc(var(--d) + .6s) infinite; }
+@keyframes tagBob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+.bw-slot { transform-box: fill-box; transform-origin: 50% 60%; transition: transform .45s cubic-bezier(.4,0,.6,1); }
+.bowl.is-open .bw-slot { transition: transform .75s cubic-bezier(.25,1.7,.45,1) calc(var(--si, 0) * .12s); }
+.bowl.is-open .bw-t0 { --si: 0; transform: translate(-150px, -250px) scale(1.3) rotate(-7deg); }
+.bowl.is-open .bw-t1 { --si: 1; transform: translate(150px, -250px) scale(1.3) rotate(7deg); }
+.bowl.is-open .bw-t2 { --si: 2; transform: translate(0, -165px) scale(1.3); }
+.bowl.is-open .bw-bob { animation-duration: 1.4s; }
+.bowl.is-open .bw-noodles { transform-box: view-box; transform-origin: 668px 640px; animation: noodleWiggle .8s ease-in-out; }
 @keyframes noodleWiggle {
   0%, 100% { transform: none; }
-  25% { transform: translateY(-12px) scale(1.02, 1.04) rotate(-1.2deg); }
-  60% { transform: translateY(3px) scale(1.02, .97) rotate(1deg); }
+  25% { transform: translateY(-14px) scale(1.03, 1.05) rotate(-1.4deg); }
+  60% { transform: translateY(4px) scale(1.02, .96) rotate(1.2deg); }
 }
-.bowl[data-lit="soup"] .bw-ripple { display: inline; }
-.bowl[data-lit="soup"] .bw-ripple ellipse { transform-box: fill-box; transform-origin: center; animation: splashRing .9s ease-out both; }
-.bowl[data-lit="soup"] .bw-ripple ellipse:nth-child(2) { animation-delay: .15s; }
-.bowl[data-lit="soup"] .bw-ripple ellipse:nth-child(3) { animation-delay: .3s; }
+.bowl-art.pop { animation: bowlBump .5s cubic-bezier(.3,1.6,.5,1); }

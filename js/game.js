@@ -1704,34 +1704,42 @@
         `<div class="tap-chip">👆 Tap the burger!</div>`;
     }
     if (state.mode === "sandwich") return Art.stack(state.stack.layers, "sandwich");
-    return Art.bowl(state.picks.map((p) => p.ingredient), { size: "xl", stage: "done", still: true, labels: true }) +
-      `<div class="tap-chip">👆 Touch the food!</div>`;
+    return Art.bowl(state.picks.map((p) => p.ingredient), { size: "xl", stage: "done", still: true, labels: true, colors: LETTER_COLORS }) +
+      `<div class="tap-chip">👆 Tap the bowl!</div>`;
   }
 
-  // Champon result: hover (or tap) soup, noodles or a topping to see its name.
-  function attachBowlHover() {
+  // Champon result: tap the bowl and all three toppings lift out together
+  // with their English names; tap again to drop them back in.
+  function attachBowlToggle() {
     const bowl = els.resultBowl.querySelector(".bowl");
     if (!bowl) return;
+    const art = bowl.querySelector(".bowl-art");
     const chip = els.resultBowl.querySelector(".tap-chip");
-    let off = 0;
-    const light = (zone, hold) => {
-      clearTimeout(off);
-      if (bowl.dataset.lit !== zone) {
-        bowl.dataset.lit = zone;
-        if (zone === "soup") AudioFx.pour(); else AudioFx.plop();
-      }
+    bowl.classList.add("is-tappable");
+    bowl.setAttribute("role", "button");
+    bowl.setAttribute("tabindex", "0");
+    bowl.setAttribute("aria-pressed", "false");
+    bowl.setAttribute("aria-label", "Tap to lift the toppings out of the bowl");
+    function toggle() {
+      const open = bowl.classList.toggle("is-open");
+      bowl.setAttribute("aria-pressed", open ? "true" : "false");
       if (chip) chip.classList.add("is-done");
-      if (hold) off = setTimeout(() => { delete bowl.dataset.lit; }, hold);
-    };
-    const dim = () => { clearTimeout(off); delete bowl.dataset.lit; };
-    bowl.querySelectorAll(".bowl-hit").forEach((hit) => {
-      const zone = hit.dataset.zone;
-      hit.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") light(zone); });
-      hit.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") dim(); });
-      hit.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") light(zone, 2200); });
-      hit.addEventListener("focus", () => light(zone));
-      hit.addEventListener("blur", dim);
-      hit.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); light(zone, 2200); } });
+      art.classList.remove("pop");
+      void art.offsetWidth;
+      art.classList.add("pop");
+      if (open) {
+        AudioFx.whoosh();
+        [0, 1, 2].forEach((i) => later(() => AudioFx.plop(), 160 + i * 130));
+        bowl.querySelectorAll(".cook-sparkles").forEach((n) => n.remove());
+        bowl.insertAdjacentHTML("beforeend", `<div class="cook-sparkles">${sparkleBits(10)}</div>`);
+      } else {
+        AudioFx.thump(2);
+        later(() => AudioFx.plop(), 250);
+      }
+    }
+    bowl.addEventListener("click", toggle);
+    bowl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   }
 
@@ -1768,7 +1776,7 @@
     els.resultList.setAttribute("aria-label", `My ${noun} is ${articleFor(letters[0] || "B")} ${acro} ${noun}.`);
     if (mode === "burger") later(() => attachBurgerPressToggle(), 100);
     if (mode === "pizza") later(() => attachPizzaPressToggle(), 100);
-    if (mode === "champon") later(() => attachBowlHover(), 100);
+    if (mode === "champon") later(() => attachBowlToggle(), 100);
     els.resultChef.innerHTML = Art.chef(mode);
     els.resultChef.className = `mascot mascot-result chef-${mode}`;
     burstConfetti();
@@ -1882,8 +1890,9 @@
       .replace(/&nbsp;/g, "&#160;")
       .replace(/<svg(?![^>]*xmlns=)/g, '<svg xmlns="http://www.w3.org/2000/svg"');
     const food = els.resultBowl.cloneNode(true);
-    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .bowl-label, .bowl-hits, .pizza-pulls, .pizza-pull-root, .cook-sparkles").forEach((node) => node.remove());
+    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .bowl-label, .pizza-pulls, .pizza-pull-root, .cook-sparkles").forEach((node) => node.remove());
     food.querySelectorAll(".is-exploded").forEach((node) => node.classList.remove("is-exploded"));
+    food.querySelectorAll(".bowl.is-open").forEach((node) => node.classList.remove("is-open"));
     // The saved picture keeps the pizza sliced apart, as it always has.
     food.querySelectorAll(".pizza.is-sliced").forEach((node) => node.classList.add("is-parted"));
     const defs = document.querySelector(".svg-defs");
