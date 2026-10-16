@@ -304,13 +304,13 @@ button {
 .bw-stream .bw-stream-body { stroke: #e9c987; stroke-width: 58; }
 .bw-stream .bw-stream-hi { stroke: #fff6dc; stroke-width: 12; opacity: .85; }
 .bw-pot { transform-box: fill-box; transform-origin: 0 0; opacity: 0; }
-.pot-body { fill: #e53935; stroke: #7f1d1d; stroke-width: 8; }
-.pot-band { fill: #b71c1c; stroke: #7f1d1d; stroke-width: 8; }
+.pot-body { fill: #4caf50; stroke: #1b5e20; stroke-width: 8; }
+.pot-band { fill: #2e7d32; stroke: #1b5e20; stroke-width: 8; }
 .pot-handle { fill: #8d6e63; stroke: #4e342e; stroke-width: 8; }
 .pot-eye { fill: #3e2723; }
 .pot-cheek { fill: #ff8a80; opacity: .8; }
 .pot-mouth { fill: none; stroke: #3e2723; stroke-width: 7; stroke-linecap: round; }
-.pot-shine { fill: none; stroke: #ffcdd2; stroke-width: 9; stroke-linecap: round; }
+.pot-shine { fill: none; stroke: #c8e6c9; stroke-width: 9; stroke-linecap: round; }
 .bw-pourdrops circle, .bw-drops circle { fill: #f1d9a6; stroke: #fff6d8; stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
 .bw-ripple ellipse, .bw-splash ellipse { fill: none; stroke: #fffaf0; stroke-width: 10; opacity: 0; }
 .bw-bob { animation: brothBob 2.6s ease-in-out infinite; animation-delay: var(--d, 0s); }
@@ -361,12 +361,12 @@ button {
 .is-cooking.bowl-stage-empty.is-pouring .bw-stream { display: inline; }
 .is-cooking.bowl-stage-empty.is-pouring .bw-pot { animation: potPour 2s cubic-bezier(.4,0,.3,1) both; }
 @keyframes potPour {
-  0% { opacity: 0; transform: translate(300px, -160px) rotate(0); }
+  0% { opacity: 0; transform: translate(220px, -120px) rotate(0); }
   12% { opacity: 1; transform: translate(0, 0) rotate(-4deg); }
   26% { opacity: 1; transform: translate(0, 0) rotate(-36deg); }
   68% { opacity: 1; transform: translate(0, 0) rotate(-42deg); }
   84% { opacity: 1; transform: translate(0, 0) rotate(-4deg); }
-  100% { opacity: 0; transform: translate(300px, -160px) rotate(0); }
+  100% { opacity: 0; transform: translate(220px, -120px) rotate(0); }
 }
 .is-cooking.bowl-stage-empty.is-pouring .bw-stream path:not(.bw-pot *) { stroke-dasharray: 1 2; stroke-dashoffset: 1; animation: streamPour 2s linear both; }
 @keyframes streamPour {
@@ -2735,3 +2735,42 @@ body[data-screen="result"] .hud-right { align-items: center; }
   .game-logo img { height: auto; width: min(88vw, 420px); }
   #screen-title .mode-card { height: 190px; }
 }
+
+/* champon result: touch / hover the food to see its name */
+.bowl-hits { pointer-events: none; }
+.bowl-hit { fill: transparent; pointer-events: all; cursor: pointer; outline: none; }
+.bowl-label {
+  position: absolute; left: var(--x); top: var(--y);
+  transform: translate(-50%, -50%) scale(.4); opacity: 0;
+  white-space: nowrap; pointer-events: none; z-index: 40;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(14px, 2.6vh, 24px); line-height: 1; color: var(--ink-deep);
+  background: #fffdf4; border: 3px solid var(--ink-deep); border-radius: 999px;
+  padding: 6px 14px 5px; box-shadow: 0 3px 0 var(--ink-deep);
+  transition: transform .3s cubic-bezier(.2,1.6,.4,1), opacity .15s ease;
+}
+.bowl[data-lit="soup"] .bowl-label[data-for="soup"],
+.bowl[data-lit="noodles"] .bowl-label[data-for="noodles"],
+.bowl[data-lit="t0"] .bowl-label[data-for="t0"],
+.bowl[data-lit="t1"] .bowl-label[data-for="t1"],
+.bowl[data-lit="t2"] .bowl-label[data-for="t2"] { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+/* the touched food hops / wiggles */
+.bowl[data-lit="t0"] .bw-t0 .tp-fly, .bowl[data-lit="t1"] .bw-t1 .tp-fly, .bowl[data-lit="t2"] .bw-t2 .tp-fly {
+  transform-box: fill-box; transform-origin: 50% 80%; animation: tpHop .5s cubic-bezier(.3,1.6,.5,1) calc(var(--k) * .06s);
+}
+@keyframes tpHop {
+  0% { transform: none; }
+  35% { transform: translateY(-34px) scale(.95, 1.1); }
+  70% { transform: translateY(4px) scale(1.06, .92); }
+  100% { transform: none; }
+}
+.bowl[data-lit="noodles"] .bw-noodles { transform-box: view-box; transform-origin: 668px 640px; animation: noodleWiggle .6s ease-in-out; }
+@keyframes noodleWiggle {
+  0%, 100% { transform: none; }
+  25% { transform: translateY(-12px) scale(1.02, 1.04) rotate(-1.2deg); }
+  60% { transform: translateY(3px) scale(1.02, .97) rotate(1deg); }
+}
+.bowl[data-lit="soup"] .bw-ripple { display: inline; }
+.bowl[data-lit="soup"] .bw-ripple ellipse { transform-box: fill-box; transform-origin: center; animation: splashRing .9s ease-out both; }
+.bowl[data-lit="soup"] .bw-ripple ellipse:nth-child(2) { animation-delay: .15s; }
+.bowl[data-lit="soup"] .bw-ripple ellipse:nth-child(3) { animation-delay: .3s; }

@@ -1501,14 +1501,14 @@
     setCookText("Hot soup!", "あつあつスープ！ トポトポ〜！");
     AudioFx.pour();
     later(() => AudioFx.pour(), 700);
-    later(() => { bump(); bowl.classList.add("show-steam"); AudioFx.plop(); }, 1500);
+    later(() => { bowl.classList.add("show-steam"); AudioFx.plop(); }, 1500);
     await wait(2300);
 
     // 2. noodles swirl in
     setStage("noodles", "show-noodles");
     setCookText("Noodles!", "めんをいれるよ！ ちゅるちゅる〜！");
     AudioFx.whoosh();
-    later(() => { AudioFx.plop(); bump(); }, 500);
+    later(() => AudioFx.plop(), 500);
     later(() => AudioFx.sizzle(), 650);
     await wait(1700);
 
@@ -1517,7 +1517,7 @@
       setStage(`top${i + 1}`, `show-t${i}`);
       setCookText(`${ings[i].name}!`, `${ings[i].nameJa}！ ポチャン！`);
       AudioFx.whoosh();
-      [0, 130, 260].forEach((d) => later(() => { AudioFx.plop(); if (d === 130) bump(); }, 440 + d));
+      [0, 130, 260].forEach((d) => later(() => { AudioFx.plop(); if (d === 130 && i === ings.length - 1) bump(); }, 440 + d));
       await wait(1400);
     }
 
@@ -1525,7 +1525,7 @@
     setStage("done", "show-garnish");
     setCookText("Champon!", "ちゃんぽん！ いただきます！");
     AudioFx.cook();
-    later(() => { AudioFx.plop(); bump(); }, 500);
+    later(() => AudioFx.plop(), 500);
     later(() => {
       art.classList.remove("bump", "happy");
       void art.offsetWidth;
@@ -1704,7 +1704,35 @@
         `<div class="tap-chip">👆 Tap the burger!</div>`;
     }
     if (state.mode === "sandwich") return Art.stack(state.stack.layers, "sandwich");
-    return Art.bowl(state.picks.map((p) => p.ingredient), { size: "xl", stage: "done", still: true });
+    return Art.bowl(state.picks.map((p) => p.ingredient), { size: "xl", stage: "done", still: true, labels: true }) +
+      `<div class="tap-chip">👆 Touch the food!</div>`;
+  }
+
+  // Champon result: hover (or tap) soup, noodles or a topping to see its name.
+  function attachBowlHover() {
+    const bowl = els.resultBowl.querySelector(".bowl");
+    if (!bowl) return;
+    const chip = els.resultBowl.querySelector(".tap-chip");
+    let off = 0;
+    const light = (zone, hold) => {
+      clearTimeout(off);
+      if (bowl.dataset.lit !== zone) {
+        bowl.dataset.lit = zone;
+        if (zone === "soup") AudioFx.pour(); else AudioFx.plop();
+      }
+      if (chip) chip.classList.add("is-done");
+      if (hold) off = setTimeout(() => { delete bowl.dataset.lit; }, hold);
+    };
+    const dim = () => { clearTimeout(off); delete bowl.dataset.lit; };
+    bowl.querySelectorAll(".bowl-hit").forEach((hit) => {
+      const zone = hit.dataset.zone;
+      hit.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") light(zone); });
+      hit.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") dim(); });
+      hit.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") light(zone, 2200); });
+      hit.addEventListener("focus", () => light(zone));
+      hit.addEventListener("blur", dim);
+      hit.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); light(zone, 2200); } });
+    });
   }
 
   // The speaking frame students read out loud:
@@ -1740,6 +1768,7 @@
     els.resultList.setAttribute("aria-label", `My ${noun} is ${articleFor(letters[0] || "B")} ${acro} ${noun}.`);
     if (mode === "burger") later(() => attachBurgerPressToggle(), 100);
     if (mode === "pizza") later(() => attachPizzaPressToggle(), 100);
+    if (mode === "champon") later(() => attachBowlHover(), 100);
     els.resultChef.innerHTML = Art.chef(mode);
     els.resultChef.className = `mascot mascot-result chef-${mode}`;
     burstConfetti();
@@ -1853,7 +1882,7 @@
       .replace(/&nbsp;/g, "&#160;")
       .replace(/<svg(?![^>]*xmlns=)/g, '<svg xmlns="http://www.w3.org/2000/svg"');
     const food = els.resultBowl.cloneNode(true);
-    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .pizza-pulls, .pizza-pull-root, .cook-sparkles").forEach((node) => node.remove());
+    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .bowl-label, .bowl-hits, .pizza-pulls, .pizza-pull-root, .cook-sparkles").forEach((node) => node.remove());
     food.querySelectorAll(".is-exploded").forEach((node) => node.classList.remove("is-exploded"));
     // The saved picture keeps the pizza sliced apart, as it always has.
     food.querySelectorAll(".pizza.is-sliced").forEach((node) => node.classList.add("is-parted"));

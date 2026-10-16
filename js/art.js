@@ -814,6 +814,19 @@ const Art = {
         `<g class="bw-splash"><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="190" ry="60"/><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="120" ry="38"/></g>` +
         `<g class="bw-drops">${drops}</g></g>`;
     }).join("");
+    // Result screen: touch/hover zones + name tags for soup, noodles and each topping
+    let hits = "", labelHtml = "";
+    if (options.labels) {
+      const zones = [
+        { id: "soup", name: "Soup", x: 668, y: 905, rx: 360, ry: 50, ly: 890 },
+        { id: "noodles", name: "Noodles", x: 668, y: 620, rx: 420, ry: 210, ly: 560 },
+        ...ings.map((ing, i) => ({ id: `t${i}`, name: ing.name, x: slots[i].x, y: slots[i].y + 30, rx: 190, ry: 120, ly: slots[i].y + 30 }))
+      ];
+      hits = `<g class="bowl-hits">${zones.map((z) =>
+        `<ellipse class="bowl-hit" data-zone="${z.id}" tabindex="0" role="button" aria-label="${z.name}" cx="${z.x}" cy="${z.y}" rx="${z.rx}" ry="${z.ry}"/>`).join("")}</g>`;
+      labelHtml = zones.map((z) =>
+        `<span class="bowl-label" data-for="${z.id}" style="--x:${(z.x / 13.49).toFixed(2)}%;--y:${(z.ly / 11.66).toFixed(2)}%">${z.name}</span>`).join("");
+    }
     const bubbles = Array.from({ length: 9 }, (_, n) => {
       const a = n * 2.4;
       return `<circle cx="${(668 + Math.cos(a) * (120 + n * 28)).toFixed(0)}" cy="${(640 + Math.sin(a) * (60 + n * 14)).toFixed(0)}" r="${(8 + (n % 3) * 4)}" style="--bd:${(n * 0.37).toFixed(2)}s"/>`;
@@ -841,9 +854,9 @@ const Art = {
               <g class="bw-bubbles">${bubbles}</g>
             </g>
             <g class="bw-stream">
-              <path class="bw-stream-body" pathLength="1" d="M806 168 C 764 196, 716 300, 692 420 S 668 540, 668 612"/>
-              <path class="bw-stream-hi" pathLength="1" d="M800 172 C 758 204, 712 304, 688 422 S 664 540, 664 606"/>
-              <g transform="translate(806 158)"><g class="bw-pot">
+              <path class="bw-stream-body" pathLength="1" d="M796 214 C 756 238, 712 322, 692 432 S 668 540, 668 612"/>
+              <path class="bw-stream-hi" pathLength="1" d="M790 218 C 750 244, 708 326, 688 434 S 664 540, 664 606"/>
+              <g transform="translate(796 200) scale(1.5)"><g class="bw-pot">
                 <rect class="pot-handle" x="232" y="26" width="70" height="30" rx="15"/>
                 <rect class="pot-body" x="0" y="0" width="250" height="160" rx="38"/>
                 <rect class="pot-band" x="0" y="0" width="250" height="34" rx="17"/>
@@ -865,7 +878,9 @@ const Art = {
               <g class="onions">${N.onions}</g>
               <g class="sesame">${N.sesame}</g>
             </g>
+            ${hits}
           </svg>
+          ${labelHtml}
         </div>
       </div>`;
   }
