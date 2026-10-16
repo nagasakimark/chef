@@ -194,36 +194,139 @@ const Art = {
       </div>`;
   },
 
-  // Cheese strands that bridge the gap between neighbouring slices while they
-  // slide apart, then snap back onto their own slice. Each strand is two halves
-  // anchored at the slices' edges; geometry mirrors the wedge transform
-  // (scale .85 + 8.5% nudge along each wedge's middle angle).
+  // Empty overlay the cheese pull draws into (see playCheesePull).
   pizzaPulls(cheeseType) {
     const cheeseDef = cheeseType && typeof getCheese === "function" ? getCheese(cheeseType) : null;
     const melt = (cheeseDef && cheeseDef.melt) || { base: "#ffe38a", wash: "#eba02f" };
-    const D = 8.5, S = 0.85;
-    const gap = 2 * D * Math.sin(Math.PI / 8);
-    const out = [];
+    return `<svg class="pizza-pulls" viewBox="0 0 100 100" aria-hidden="true" data-c1="${melt.base}" data-c2="${melt.wash}"></svg>`;
+  },
+
+  // Cheese pull: as the slices are dragged apart, gooey strands stay glued to
+  // both neighbours, sag and thin out as they stretch, then snap and whip
+  // back onto their own slice while the slices spring into place. Driven per
+  // frame so the strand ends follow the real slice positions.
+  playCheesePull(pizza) {
+    if (!pizza) return;
+    const svg = pizza.querySelector(".pizza-pulls");
+    const wraps = pizza.querySelectorAll(".pz-slice-wrap");
+    if (!svg || wraps.length !== 8) return;
+    this.cancelCheesePull(pizza);
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const D = 8.5, PMAX = 2.05, T_OUT = 780, T_BACK = 520;
+    const c1 = "#ffd84a", c2 = svg.dataset.c2 || "#eba02f";
+    const uid = "cp" + Math.floor(Math.random() * 1e6);
+    svg.innerHTML = `<defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">` +
+      `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>`;
+    const mid = (k) => ((k * 45 + 22.5) * Math.PI) / 180;
+    // strands: a few per cut, each with its own thickness, break point and snap time
+    const strands = [];
     for (let k = 0; k < 8; k++) {
-      const a = k * 45, rad = (a * Math.PI) / 180;
-      const ux = Math.cos(rad), uy = Math.sin(rad);
-      // a few strands per cut, only in some places
-      const radii = [11, 20, 29, 38].filter(() => Math.random() < 0.55);
-      if (!radii.length) radii.push(20 + Math.random() * 12);
-      radii.forEach((r0) => {
-        const r = r0 + (Math.random() - 0.5) * 4;
-        const x0 = 50 + r * ux, y0 = 50 + r * uy;
-        const m = S * r + D * Math.cos(Math.PI / 8);
-        const x1 = 50 + m * ux, y1 = 50 + m * uy;
-        const th = 1.7 + Math.random() * 1.3;
-        const snap = 0.3 + Math.random() * 0.3;
-        const len = gap * (0.95 + Math.random() * 0.25);
-        out.push(`<span class="pull" style="--x0:${x0.toFixed(2)}%;--y0:${y0.toFixed(2)}%;--x1:${x1.toFixed(2)}%;--y1:${y1.toFixed(2)}%;` +
-          `--rot:${a + 90}deg;--len:${len.toFixed(2)}%;--th:${th.toFixed(2)}%;--snap:${snap.toFixed(2)}s">` +
-          `<i class="h h1"></i><i class="h h2"></i></span>`);
+      const a = ((k + 1) * 45 * Math.PI) / 180;
+      let radii = [8, 15, 22, 29, 36, 43].filter(() => Math.random() < 0.7);
+      if (radii.length < 2) radii = [16, 33];
+      radii.forEach((r) => {
+        const path = document.createElementNS(NS, "path");
+        path.setAttribute("fill", `url(#${uid})`);
+        path.setAttribute("stroke", "rgba(140,70,0,.8)");
+        path.setAttribute("stroke-width", ".3");
+        path.setAttribute("stroke-linejoin", "round");
+        svg.appendChild(path);
+        strands.push({
+          path, k, k2: (k + 1) % 8, ux: Math.cos(a), uy: Math.sin(a),
+          r: r + (Math.random() - 0.5) * 3,
+          w: 1.5 + Math.random() * 1.0,
+          pBreak: 1.35 + Math.random() * 0.65,
+          cut: 0.35 + Math.random() * 0.3,
+          sag: 0.18 + Math.random() * 0.2,
+          tBreak: null
+        });
       });
     }
-    return `<div class="pizza-pulls" aria-hidden="true" style="--c1:${melt.base};--c2:${melt.wash}">${out.join("")}</div>`;
+    const easeOut = (x) => 1 - Math.pow(1 - x, 2.2);
+    const pAt = (t) => {
+      if (t < T_OUT) return PMAX * easeOut(t / T_OUT);
+      const x = Math.min(1, (t - T_OUT) / T_BACK);
+      // spring from PMAX back to 1 with a little overshoot below 1
+      return 1 + (PMAX - 1) * Math.exp(-5 * x) * Math.cos(x * 9);
+    };
+    const anchor = (st, k, p) => {
+      const S = 1 - 0.15 * Math.min(1, p);
+      return [50 + p * D * Math.cos(mid(k)) + S * st.r * st.ux, 50 + p * D * Math.sin(mid(k)) + S * st.r * st.uy];
+    };
+    const f = (n) => n.toFixed(2);
+    // filled ribbon along a quadratic curve A -> C -> B, half-width h(s)
+    const ribbon = (A, C, B, h) => {
+      const L = [], R = [], N = 14;
+      for (let i = 0; i <= N; i++) {
+        const s = i / N, q = 1 - s;
+        const x = q * q * A[0] + 2 * q * s * C[0] + s * s * B[0];
+        const y = q * q * A[1] + 2 * q * s * C[1] + s * s * B[1];
+        let tx = 2 * q * (C[0] - A[0]) + 2 * s * (B[0] - C[0]);
+        let ty = 2 * q * (C[1] - A[1]) + 2 * s * (B[1] - C[1]);
+        const m = Math.hypot(tx, ty) || 1;
+        tx /= m; ty /= m;
+        const w = h(s);
+        L.push(`${f(x - ty * w)} ${f(y + tx * w)}`);
+        R.push(`${f(x + ty * w)} ${f(y - tx * w)}`);
+      }
+      return `M${L.join("L")}L${R.reverse().join("L")}Z`;
+    };
+    const t0 = performance.now();
+    const total = T_OUT + T_BACK;
+    const frame = (now) => {
+      const t = Math.min(now - t0, total);
+      if (!pizza.isConnected) return;
+      const p = pAt(t), S = 1 - 0.15 * Math.min(1, p);
+      wraps.forEach((w, k) => {
+        w.style.transition = "none";
+        w.style.transform = `translate(${f(p * D * Math.cos(mid(k)))}%, ${f(p * D * Math.sin(mid(k)))}%) scale(${f(S)})`;
+      });
+      strands.forEach((st) => {
+        const A = anchor(st, st.k, p), B = anchor(st, st.k2, p);
+        const len = Math.hypot(B[0] - A[0], B[1] - A[1]);
+        const stretch = Math.min(1, p / st.pBreak);
+        if (st.tBreak === null && p >= st.pBreak && t < T_OUT + 40) st.tBreak = t;
+        if (st.tBreak === null && t >= T_OUT) st.tBreak = t;
+        if (st.tBreak === null) {
+          // glued to both slices: droops under its own weight, waist thins as it stretches
+          const sag = st.sag * len * (1 - 0.5 * stretch) + 0.4;
+          const C = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2 + sag * 2];
+          const waist = Math.max(0.2, 1 - stretch * 0.75);
+          const wEnd = st.w * 1.3, wMid = st.w * 0.45 * waist;
+          st.path.setAttribute("d", ribbon(A, C, B, (s) => wMid + (wEnd - wMid) * Math.exp(-Math.min(s, 1 - s) * 16)));
+          return;
+        }
+        // snapped: both halves whip back to their own slice
+        const u = Math.min(1, (t - st.tBreak) / 170);
+        if (u >= 1) { st.path.setAttribute("d", ""); return; }
+        const back = u * u;
+        const rest = 1 - back;
+        const mk = (X, Y) => {
+          const reach = st.cut * rest;
+          const tip = [X[0] + (Y[0] - X[0]) * reach, X[1] + (Y[1] - X[1]) * reach + rest * len * 0.25];
+          const C = [(X[0] + tip[0]) / 2, (X[1] + tip[1]) / 2 + rest * len * 0.1];
+          const wTip = st.w * 0.25 + 0.2;
+          return ribbon(X, C, tip, (s) => wTip + (st.w * 1.3 - wTip) * Math.exp(-s * 9));
+        };
+        st.path.setAttribute("d", mk(A, B) + mk(B, A));
+      });
+      if (t >= total) { cleanup(); return; }
+      pizza._pullRaf = requestAnimationFrame(frame);
+    };
+    const cleanup = () => {
+      wraps.forEach((w) => { w.style.transition = ""; w.style.transform = ""; });
+      svg.innerHTML = "";
+      pizza._pullRaf = 0;
+    };
+    pizza._pullCleanup = cleanup;
+    pizza._pullRaf = requestAnimationFrame(frame);
+  },
+
+  cancelCheesePull(pizza) {
+    if (!pizza || !pizza._pullRaf) return;
+    cancelAnimationFrame(pizza._pullRaf);
+    if (pizza._pullCleanup) pizza._pullCleanup();
   },
 
   // The baked pizza as 8 real wedges: the same layers repeated, each clipped

@@ -1596,6 +1596,7 @@
       [0, 1, 2, 3].forEach((i) => later(() => AudioFx.chop(), i * 320 + 60));
       await wait(1400);
       stage.classList.add("is-parted");
+      Art.playCheesePull(stage.querySelector(".pizza.is-sliced"));
       AudioFx.plop();
       await wait(800);
       stage.insertAdjacentHTML("beforeend", `<div class="cook-sparkles">${sparkleBits(12)}</div>`);
@@ -1748,7 +1749,7 @@
       pizza.setAttribute("aria-pressed", open ? "true" : "false");
       // The hint has done its job after the first tap (and would sit on top of a label on small screens).
       if (chip) chip.classList.add("is-done");
-      if (open) AudioFx.plop(); else AudioFx.thump(2);
+      if (open) { Art.playCheesePull(pizza); AudioFx.plop(); } else { Art.cancelCheesePull(pizza); AudioFx.thump(2); }
       pizza.classList.remove("is-bounce");
       void pizza.offsetWidth;
       if (!open) pizza.classList.add("is-bounce");
@@ -1819,7 +1820,7 @@
       .replace(/&nbsp;/g, "&#160;")
       .replace(/<svg(?![^>]*xmlns=)/g, '<svg xmlns="http://www.w3.org/2000/svg"');
     const food = els.resultBowl.cloneNode(true);
-    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .cook-sparkles").forEach((node) => node.remove());
+    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .pizza-pulls, .cook-sparkles").forEach((node) => node.remove());
     food.querySelectorAll(".is-exploded").forEach((node) => node.classList.remove("is-exploded"));
     // The saved picture keeps the pizza sliced apart, as it always has.
     food.querySelectorAll(".pizza.is-sliced").forEach((node) => node.classList.add("is-parted"));

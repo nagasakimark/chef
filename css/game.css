@@ -2168,41 +2168,8 @@ button {
 }
 .pizza.is-parted .pizza-label { opacity: 1; transform: translate(-50%, 0) scale(1); transition-delay: calc(.3s + var(--d)); }
 
-/* cheese pull: strands stretch between slices, thin out, then snap back */
-.pizza-pulls { position: absolute; inset: 0; z-index: 9; pointer-events: none; display: none; }
-.pz-baked .pizza-pulls, .pizza.is-parted .pizza-pulls { display: block; }
-.pull {
-  position: absolute; left: var(--x0); top: var(--y0);
-  width: 0; height: var(--th);
-  transform: translate(-50%, -50%) rotate(var(--rot));
-  opacity: 0;
-  filter: drop-shadow(0 1px 1px rgba(80, 35, 0, .4));
-}
-.pull .h {
-  position: absolute; top: 0; bottom: 0; width: 50%;
-  background: linear-gradient(var(--c1), var(--c2));
-  transform: scaleX(1);
-}
-.pull .h1 { left: 0; transform-origin: 0 50%; clip-path: polygon(0 0, 100% 38%, 100% 62%, 0 100%); }
-.pull .h2 { right: 0; transform-origin: 100% 50%; clip-path: polygon(0 38%, 100% 0, 100% 100%, 0 62%); }
-.pull::before, .pull::after {
-  content: ""; position: absolute; top: 50%; height: 150%; aspect-ratio: 1.1;
-  transform: translateY(-50%); border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, var(--c1), var(--c2));
-}
-.pull::before { left: -.8%; }
-.pull::after { right: -.8%; }
-.pz-stage.is-parted .pull, .pizza.is-parted .pull {
-  left: var(--x1); top: var(--y1); width: var(--len);
-  transition: left .65s cubic-bezier(.3, 1.45, .5, 1), top .65s cubic-bezier(.3, 1.45, .5, 1),
-    width .65s cubic-bezier(.3, 1.45, .5, 1);
-  animation: pullLife 1.05s linear forwards;
-}
-.pz-stage.is-parted .pull .h, .pizza.is-parted .pull .h {
-  transform: scaleX(0);
-  transition: transform .17s cubic-bezier(.6, 0, 1, .6) var(--snap);
-}
-@keyframes pullLife { 0% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; } }
+/* cheese pull: strands are drawn per frame by Art.playCheesePull */
+.pizza-pulls { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 9; pointer-events: none; overflow: visible; }
 
 /* docks: give the live preview real width so fixed-ratio art can size itself */
 #pick-bowl, #country-bowl { width: 100%; display: flex; justify-content: center; }
