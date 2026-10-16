@@ -176,6 +176,7 @@ const Art = {
     const layers = `
         ${this.pizzaBase(cooked)}
         ${sauceUrl ? `<img class="pizza-sauce-img${cooked ? " is-baked" : ""}" src="${sauceUrl}" alt="">` : ""}
+        ${options.sliced && options.cutLines ? `<svg class="pizza-pull-root" viewBox="0 0 100 100" aria-hidden="true"><g></g></svg>` : ""}
         ${meltImgs}
         ${cheese && !cooked && (cheese.type || cheese.id) ? `<div class="pizza-cheese"><img class="pizza-cheese-img" src="${this.rawCheese(cheese.type || cheese.id)}" alt=""></div>` : ""}
         <div class="pizza-toppings">${tops}</div>
@@ -183,8 +184,8 @@ const Art = {
     if (options.sliced) {
       return `
       <div class="pizza pizza-${size} is-cooked is-sliced${options.parted ? " is-parted" : ""}">
-        ${this.pizzaWedges(layers)}
         ${options.cutLines ? this.pizzaPulls(cheeseType) : ""}
+        ${this.pizzaWedges(layers)}
         ${options.cutLines ? this.pizzaSlices() : ""}
         ${options.labels ? this.pizzaLabels(drops) : ""}
       </div>`;
@@ -194,11 +195,12 @@ const Art = {
       </div>`;
   },
 
-  // Empty overlay the cheese pull draws into (see playCheesePull).
+  // Empty SVG under the slices that the cheese pull draws into (see
+  // playCheesePull); each slice also carries a clipped copy between its sauce
+  // and melted-cheese layers so the strand roots grow out of the cheese.
   pizzaPulls(cheeseType) {
-    const cheeseDef = cheeseType && typeof getCheese === "function" ? getCheese(cheeseType) : null;
-    const melt = (cheeseDef && cheeseDef.melt) || { base: "#ffe38a", wash: "#eba02f" };
-    return `<svg class="pizza-pulls" viewBox="0 0 100 100" aria-hidden="true" data-c1="${melt.base}" data-c2="${melt.wash}"></svg>`;
+    const def = cheeseType && typeof getCheese === "function" ? getCheese(cheeseType) : null;
+    return `<svg class="pizza-pulls" viewBox="0 0 100 100" aria-hidden="true" data-cheese="${def ? def.id : "mozzarella"}"></svg>`;
   },
 
   // Cheese pull: as the slices are dragged apart, gooey strands stay glued to
@@ -214,10 +216,21 @@ const Art = {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const NS = "http://www.w3.org/2000/svg";
     const D = 8.5, PMAX = 2.05, T_OUT = 780, T_BACK = 520;
-    const c1 = "#ffd84a", c2 = svg.dataset.c2 || "#eba02f";
+    // colours sampled from the melted-cheese photos so strands blend into them
+    const TONES = {
+      cheddar: ["#fdc224", "#e8970e", "rgba(150,80,0,.7)"],
+      mozzarella: ["#fef6d7", "#efcb80", "rgba(170,115,40,.65)"]
+    };
+    const kind = svg.dataset.cheese || "mozzarella";
+    const kinds = kind === "both" ? ["cheddar", "mozzarella"] : [kind === "cheddar" ? "cheddar" : "mozzarella"];
     const uid = "cp" + Math.floor(Math.random() * 1e6);
-    svg.innerHTML = `<defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">` +
-      `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>`;
+    svg.innerHTML = `<defs>` + kinds.map((n) => `<linearGradient id="${uid}${n}" x1="0" y1="0" x2="0" y2="1">` +
+      `<stop offset="0" stop-color="${TONES[n][0]}"/><stop offset="1" stop-color="${TONES[n][1]}"/></linearGradient>`).join("") + `</defs>`;
+    const roots = [...pizza.querySelectorAll(".pz-slice")].map((sl) => {
+      const r = sl.querySelector(".pizza-pull-root");
+      return r ? r.firstElementChild : null;
+    });
+    roots.forEach((g) => { if (g) g.innerHTML = ""; });
     const mid = (k) => ((k * 45 + 22.5) * Math.PI) / 180;
     // strands: a few per cut, each with its own thickness, break point and snap time
     const strands = [];
@@ -226,12 +239,21 @@ const Art = {
       let radii = [8, 15, 22, 29, 36, 43].filter(() => Math.random() < 0.7);
       if (radii.length < 2) radii = [16, 33];
       radii.forEach((r) => {
-        const path = document.createElementNS(NS, "path");
-        path.setAttribute("fill", `url(#${uid})`);
-        path.setAttribute("stroke", "rgba(140,70,0,.8)");
-        path.setAttribute("stroke-width", ".3");
-        path.setAttribute("stroke-linejoin", "round");
-        svg.appendChild(path);
+        const tone = kinds[Math.floor(Math.random() * kinds.length)];
+        const mkPath = (parent) => {
+          const path = document.createElementNS(NS, "path");
+          path.setAttribute("fill", `url(#${uid}${tone})`);
+          path.setAttribute("stroke", TONES[tone][2]);
+          path.setAttribute("stroke-width", ".3");
+          path.setAttribute("stroke-linejoin", "round");
+          parent.appendChild(path);
+          return path;
+        };
+        // one copy under the slices (the gap), one inside each neighbouring
+        // slice (above its sauce, below its melted cheese)
+        const copies = [mkPath(svg)];
+        [k, (k + 1) % 8].forEach((i) => { if (roots[i]) copies.push(mkPath(roots[i])); });
+        const path = { setAttribute: (n, v) => copies.forEach((c) => c.setAttribute(n, v)) };
         strands.push({
           path, k, k2: (k + 1) % 8, ux: Math.cos(a), uy: Math.sin(a),
           r: r + (Math.random() - 0.5) * 3,
@@ -279,6 +301,7 @@ const Art = {
       if (!pizza.isConnected) return;
       const p = pAt(t), S = 1 - 0.15 * Math.min(1, p);
       wraps.forEach((w, k) => {
+        if (roots[k]) roots[k].setAttribute("transform", `translate(50 50) scale(${f(1 / S)}) translate(${f(-50 - p * D * Math.cos(mid(k)))} ${f(-50 - p * D * Math.sin(mid(k)))})`);
         w.style.transition = "none";
         w.style.transform = `translate(${f(p * D * Math.cos(mid(k)))}%, ${f(p * D * Math.sin(mid(k)))}%) scale(${f(S)})`;
       });
@@ -317,6 +340,7 @@ const Art = {
     const cleanup = () => {
       wraps.forEach((w) => { w.style.transition = ""; w.style.transform = ""; });
       svg.innerHTML = "";
+      roots.forEach((g) => { if (g) g.innerHTML = ""; });
       pizza._pullRaf = 0;
     };
     pizza._pullCleanup = cleanup;

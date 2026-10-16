@@ -1820,7 +1820,7 @@
       .replace(/&nbsp;/g, "&#160;")
       .replace(/<svg(?![^>]*xmlns=)/g, '<svg xmlns="http://www.w3.org/2000/svg"');
     const food = els.resultBowl.cloneNode(true);
-    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .pizza-pulls, .cook-sparkles").forEach((node) => node.remove());
+    food.querySelectorAll(".tap-chip, .burger-label, .pizza-label, .pizza-pulls, .pizza-pull-root, .cook-sparkles").forEach((node) => node.remove());
     food.querySelectorAll(".is-exploded").forEach((node) => node.classList.remove("is-exploded"));
     // The saved picture keeps the pizza sliced apart, as it always has.
     food.querySelectorAll(".pizza.is-sliced").forEach((node) => node.classList.add("is-parted"));
