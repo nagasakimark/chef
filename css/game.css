@@ -2127,9 +2127,50 @@ button {
 .pz-stage.is-parted .pz-slice-wrap { transform: translate(var(--dx), var(--dy)) scale(.85); }
 .pz-stage.is-parted .pizza-slices { opacity: 0; transition: opacity .2s; }
 
+/* result screen: tap the pizza to slide the slices apart and show name tags */
+.tap-chip.is-done { opacity: 0; animation: none; transition: opacity .3s ease; }
+.pizza-slices { transition: opacity .2s; }
+.pizza.is-parted .pizza-slices { opacity: 0; }
+.pizza.is-tappable { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+.pizza.is-tappable:focus-visible { outline: 4px solid #fff59d; outline-offset: 6px; border-radius: 50%; }
+.pizza.is-bounce { animation: burgerPress 0.5s cubic-bezier(.2,1.5,.4,1); }
+.pizza-label {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, 0) scale(.4);
+  transform-origin: 50% 0;
+  opacity: 0;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(14px, 2.3vh, 22px);
+  line-height: 1;
+  color: var(--ink-deep);
+  background: #fffdf4;
+  border: 3px solid var(--ink-deep);
+  border-radius: 999px;
+  padding: 5px 12px 4px;
+  box-shadow: 0 3px 0 var(--ink-deep);
+  pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,1.6,.4,1), opacity .2s ease;
+  z-index: 40;
+}
+.pizza-label::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  margin-left: -7px;
+  border: 7px solid transparent;
+  border-bottom: 9px solid var(--ink-deep);
+  border-top: 0;
+}
+.pizza.is-parted .pizza-label { opacity: 1; transform: translate(-50%, 0) scale(1); transition-delay: calc(.3s + var(--d)); }
+
 /* cheese pull: strands stretch between slices, thin out, then snap back */
 .pizza-pulls { position: absolute; inset: 0; z-index: 9; pointer-events: none; display: none; }
-.pz-baked .pizza-pulls { display: block; }
+.pz-baked .pizza-pulls, .pizza.is-parted .pizza-pulls { display: block; }
 .pull {
   position: absolute; left: var(--x0); top: var(--y0);
   width: 0; height: var(--th);
@@ -2151,13 +2192,13 @@ button {
 }
 .pull::before { left: -.8%; }
 .pull::after { right: -.8%; }
-.pz-stage.is-parted .pull {
+.pz-stage.is-parted .pull, .pizza.is-parted .pull {
   left: var(--x1); top: var(--y1); width: var(--len);
   transition: left .65s cubic-bezier(.3, 1.45, .5, 1), top .65s cubic-bezier(.3, 1.45, .5, 1),
     width .65s cubic-bezier(.3, 1.45, .5, 1);
   animation: pullLife 1.05s linear forwards;
 }
-.pz-stage.is-parted .pull .h {
+.pz-stage.is-parted .pull .h, .pizza.is-parted .pull .h {
   transform: scaleX(0);
   transition: transform .17s cubic-bezier(.6, 0, 1, .6) var(--snap);
 }
