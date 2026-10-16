@@ -1477,29 +1477,62 @@
     const ings = state.picks.map((p) => p.ingredient);
     els.cookBowl.innerHTML = Art.bowl(ings, { size: "xl", stage: "empty", cooking: true });
     const bowl = els.cookBowl.querySelector(".bowl");
+    const art = bowl.querySelector(".bowl-art");
     const setStage = (stage, add) => {
       bowl.className = bowl.className.replace(/bowl-stage-\S+/, `bowl-stage-${stage}`);
       if (add) bowl.classList.add(add);
     };
+    // squish the whole bowl whenever something lands in it
+    const bump = () => {
+      art.classList.remove("bump");
+      void art.offsetWidth;
+      art.classList.add("bump");
+    };
+
+    // 0. the empty bowl slams down
+    bowl.classList.add("bowl-enter");
+    setCookText("Bowl!", "どんぶり！ ドスン！");
+    AudioFx.whoosh();
+    later(() => { AudioFx.thump(0); AudioFx.thump(2); }, 420);
+    await wait(1000);
+
+    // 1. hot soup glugs in and the level rises
+    bowl.classList.add("is-pouring");
     setCookText("Hot soup!", "あつあつスープ！ トポトポ〜！");
     AudioFx.pour();
-    await wait(1300);
+    later(() => AudioFx.pour(), 700);
+    later(() => { bump(); bowl.classList.add("show-steam"); AudioFx.plop(); }, 1500);
+    await wait(2300);
+
+    // 2. noodles swirl in
     setStage("noodles", "show-noodles");
     setCookText("Noodles!", "めんをいれるよ！ ちゅるちゅる〜！");
-    AudioFx.plop();
-    await wait(1100);
+    AudioFx.whoosh();
+    later(() => { AudioFx.plop(); bump(); }, 500);
+    later(() => AudioFx.sizzle(), 650);
+    await wait(1700);
+
+    // 3. toppings, one at a time, tossed in with a splash
     for (let i = 0; i < ings.length; i += 1) {
       setStage(`top${i + 1}`, `show-t${i}`);
       setCookText(`${ings[i].name}!`, `${ings[i].nameJa}！ ポチャン！`);
-      AudioFx.plop();
-      later(() => AudioFx.plop(), 160);
-      await wait(1000);
+      AudioFx.whoosh();
+      [0, 130, 260].forEach((d) => later(() => { AudioFx.plop(); if (d === 130) bump(); }, 440 + d));
+      await wait(1400);
     }
+
+    // 4. garnish shower + the happy finale
     setStage("done", "show-garnish");
     setCookText("Champon!", "ちゃんぽん！ いただきます！");
     AudioFx.cook();
-    bowl.insertAdjacentHTML("beforeend", `<div class="cook-sparkles">${sparkleBits(10)}</div>`);
-    finishCook(1100);
+    later(() => { AudioFx.plop(); bump(); }, 500);
+    later(() => {
+      art.classList.remove("bump", "happy");
+      void art.offsetWidth;
+      art.classList.add("happy");
+      bowl.insertAdjacentHTML("beforeend", `<div class="cook-sparkles">${sparkleBits(14)}</div>`);
+    }, 800);
+    finishCook(2100);
   }
 
   function cookPizza() {

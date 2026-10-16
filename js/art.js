@@ -727,7 +727,7 @@ const Art = {
     }
     strands.sort((a, b) => a.avgY - b.avgY);
     const strand = (d, i) =>
-      `<path class="nd-sh" d="${d}"/><path class="nd-body" d="${d}" style="--i:${i}"/><path class="nd-hi" d="${d}"/>`;
+      `<path class="nd-sh" d="${d}" pathLength="1" style="--i:${i}"/><path class="nd-body" d="${d}" pathLength="1" style="--i:${i}"/><path class="nd-hi" d="${d}" pathLength="1" style="--i:${i}"/>`;
     const body = `<ellipse class="nd-bed" cx="${CX}" cy="${CY - 30}" rx="${RX * 0.9}" ry="${RY * 0.86}"/>` +
       strands.map((s, i) => strand(s.d, i)).join("");
     // bean sprouts + cabbage ribbons tossed on top of the noodle nest
@@ -792,38 +792,73 @@ const Art = {
       { x: 672, y: 726, s: 1.06 }
     ];
     const fan = [[-112, 22, -28, 0.9], [112, 26, 24, 0.9], [0, -8, 6, 1]];
+    const flyFrom = [[-300, -60], [300, 40], [0, 0]];
     const toppings = ings.map((ing, i) => {
       const slot = slots[i];
       const copies = fan.map(([dx, dy, rot, sc], k) => {
         const S = 255 * sc * slot.s;
-        return `<g class="tp-copy" style="--k:${k}" transform="translate(${slot.x + dx} ${slot.y + dy}) rotate(${rot}) scale(1 .84)">` +
-          `<image href="${ing.image}" x="${(-S / 2).toFixed(0)}" y="${(-S / 2).toFixed(0)}" width="${S.toFixed(0)}" height="${S.toFixed(0)}" filter="url(#tc-food)"/></g>`;
+        return `<g class="tp-fly" style="--k:${k};--fx:${flyFrom[i][0] + dx}px;--fr:${(i % 2 ? 1 : -1) * (160 + k * 40)}deg">` +
+          `<g class="tp-copy" transform="translate(${slot.x + dx} ${slot.y + dy}) rotate(${rot}) scale(1 .84)">` +
+          `<image href="${ing.image}" x="${(-S / 2).toFixed(0)}" y="${(-S / 2).toFixed(0)}" width="${S.toFixed(0)}" height="${S.toFixed(0)}" filter="url(#tc-food)"/></g></g>`;
       }).join("");
       const drapes = N.drape(slot.x, slot.y + 40).map((d) => N.strand(d, 0)).join("");
-      return `<g class="bw-slot bw-t${i}"><g class="bw-drop">` +
+      const drops = Array.from({ length: 12 }, (_, n) => {
+        const a = (n / 12) * Math.PI * 2 + i;
+        const r = 26 + (n % 3) * 9;
+        return `<circle cx="${slot.x}" cy="${slot.y + 70}" r="${(r / 3).toFixed(1)}" style="--dx:${(Math.cos(a) * (150 + (n % 4) * 40)).toFixed(0)};--dy:${(-120 - (n % 3) * 55 + Math.sin(a) * 40).toFixed(0)};--dl:${(0.5 + (n % 4) * 0.02).toFixed(2)}s"/>`;
+      }).join("");
+      return `<g class="bw-slot bw-t${i}">` +
         `<ellipse class="tp-soak" cx="${slot.x}" cy="${slot.y + 92}" rx="200" ry="46"/>` +
         `<g class="bw-bob" style="--d:${(i * 0.45).toFixed(2)}s">${copies}</g>` +
-        `<g class="nd">${drapes}</g></g>` +
-        `<g class="bw-splash"><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="190" ry="60"/><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="120" ry="38"/></g></g>`;
+        `<g class="nd">${drapes}</g>` +
+        `<g class="bw-splash"><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="190" ry="60"/><ellipse cx="${slot.x}" cy="${slot.y + 80}" rx="120" ry="38"/></g>` +
+        `<g class="bw-drops">${drops}</g></g>`;
+    }).join("");
+    const bubbles = Array.from({ length: 9 }, (_, n) => {
+      const a = n * 2.4;
+      return `<circle cx="${(668 + Math.cos(a) * (120 + n * 28)).toFixed(0)}" cy="${(640 + Math.sin(a) * (60 + n * 14)).toFixed(0)}" r="${(8 + (n % 3) * 4)}" style="--bd:${(n * 0.37).toFixed(2)}s"/>`;
+    }).join("");
+    const pourDrops = Array.from({ length: 14 }, (_, n) => {
+      const dir = n % 2 ? 1 : -1;
+      return `<circle cx="668" cy="560" r="${7 + (n % 3) * 3}" style="--dx:${(dir * (60 + n * 22)).toFixed(0)};--dy:${(-170 - (n % 4) * 45).toFixed(0)};--dl:${(0.35 + n * 0.07).toFixed(2)}s"/>`;
     }).join("");
 
     return `
       <div class="bowl bowl-${size} bowl-stage-${stage} ${show.join(" ")}${options.cooking ? " is-cooking" : ""}${options.still ? " is-still" : ""}">
         <div class="steam" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         <div class="bowl-art">
+          <div class="bowl-dust" aria-hidden="true"></div>
           <img class="bowl-base" src="assets/champonbowl.png" alt="champon bowl">
           <svg class="bowl-food" viewBox="0 0 1349 1166" aria-hidden="true">
             <g class="bw-broth">
-              <ellipse class="broth-body" cx="668" cy="620" rx="476" ry="312"/>
-              <ellipse class="broth-sheen" cx="560" cy="470" rx="230" ry="70"/>
-              <g class="broth-oil">${N.oil}</g>
+              <g class="bw-level">
+                <ellipse class="broth-rim" cx="668" cy="622" rx="472" ry="308"/>
+                <ellipse class="broth-body" cx="668" cy="622" rx="462" ry="298"/>
+                <ellipse class="broth-sheen" cx="560" cy="480" rx="230" ry="70"/>
+                <g class="broth-oil">${N.oil}</g>
+                <g class="broth-glint"><path d="M258 575 q22 -88 92 -128"/><path d="M1062 505 q50 70 28 150"/><path d="M930 840 q95 -40 150 -120"/><circle cx="1010" cy="450" r="9"/><circle cx="262" cy="700" r="9"/></g>
+              </g>
+              <g class="bw-bubbles">${bubbles}</g>
             </g>
-            <g class="bw-stream"><rect x="628" y="-40" width="80" height="660" rx="40"/></g>
-            <g class="bw-ripple"><ellipse cx="668" cy="620" rx="200" ry="130"/><ellipse cx="668" cy="620" rx="330" ry="210"/></g>
-            <g class="bw-noodles" mask="url(#tc-broth-mask)"><g class="bw-drop">
+            <g class="bw-stream">
+              <path class="bw-stream-body" pathLength="1" d="M806 168 C 764 196, 716 300, 692 420 S 668 540, 668 612"/>
+              <path class="bw-stream-hi" pathLength="1" d="M800 172 C 758 204, 712 304, 688 422 S 664 540, 664 606"/>
+              <g transform="translate(806 158)"><g class="bw-pot">
+                <rect class="pot-handle" x="232" y="26" width="70" height="30" rx="15"/>
+                <rect class="pot-body" x="0" y="0" width="250" height="160" rx="38"/>
+                <rect class="pot-band" x="0" y="0" width="250" height="34" rx="17"/>
+                <ellipse class="pot-cheek" cx="62" cy="106" rx="20" ry="12"/><ellipse class="pot-cheek" cx="188" cy="106" rx="20" ry="12"/>
+                <circle class="pot-eye" cx="88" cy="84" r="9"/><circle class="pot-eye" cx="162" cy="84" r="9"/>
+                <path class="pot-mouth" d="M108 100 q17 22 34 0"/>
+                <path class="pot-shine" d="M26 52 q0 -4 16 -4"/>
+              </g></g>
+            </g>
+            <g class="bw-pourdrops">${pourDrops}</g>
+            <g class="bw-ripple"><ellipse cx="668" cy="610" rx="150" ry="95"/><ellipse cx="668" cy="610" rx="260" ry="168"/><ellipse cx="668" cy="610" rx="380" ry="245"/></g>
+            <g class="bw-noodles" mask="url(#tc-broth-mask)">
               <g class="nd">${N.body}</g>
               <g class="sprouts">${N.sprouts}</g>
-            </g></g>
+            </g>
             <g class="bw-splash bw-splash-noodles"><ellipse cx="668" cy="640" rx="420" ry="250"/><ellipse cx="668" cy="640" rx="300" ry="180"/></g>
             <g clip-path="url(#tc-front-clip)">${toppings}</g>
             <g class="bw-garnish" clip-path="url(#tc-front-clip)">
